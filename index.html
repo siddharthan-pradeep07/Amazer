@@ -20,25 +20,42 @@
             }
             button
             {
-                width:100px;
-                height:30px;
+                width:250px;
+                height:70px;
                 margin-right: 2rem;
                 border-radius: 16px;
+                color: rgb(255, 232, 198);
                 border: 1px solid #3f3f3f;
                 background: #272727;
+            }
+            button::hower
+            {
+                cursor: pointer;
+                background: #663636;
+            }
+            .layout
+            {
+                display: flex;
+                align-items: flex-start;
+                gap: 24px;
+            }
+            .side
+            { 
+                display: flex;
+                flex-direction: column;
+                gap:10px;
             }
         </style>
     </head>
     <body>
-        <div class="box">
-            <canvas id="cv"></canvas>
+        <div class="layout">
+            <div class="box">
+                <canvas id="cv"></canvas>
+            </div> 
+            <div class="side">
+                <button>Test1</button>
+                <button>Test2</button>
+            </div>
         </div>
-        <button>Test1</button>
-        <button>Test1</button>
-        <!-- <script>
-            const N = 16;
-            const CELL = 26;
-            const W = 2;
-        </script> -->
     </body>
 </html>
