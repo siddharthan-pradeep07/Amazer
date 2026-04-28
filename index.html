@@ -1,5 +1,9 @@
 <html>
     <head>
+    <title>Amazer</title>  
+      <link rel="preconnect" href="https://fonts.googleapis.com">
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+      <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">  
         <style>
             body
             {
@@ -25,13 +29,15 @@
                 margin-right: 2rem;
                 border-radius: 16px;
                 color: rgb(255, 232, 198);
+                font-size: 28px;
+                font-family: Instrument Serif;
                 border: 1px solid #3f3f3f;
                 background: #272727;
             }
-            button::hower
+            button:hover
             {
                 cursor: pointer;
-                background: #663636;
+                background: #2b2929;
             }
             .layout
             {
@@ -53,8 +59,8 @@
                 <canvas id="cv"></canvas>
             </div> 
             <div class="side">
-                <button>Test1</button>
-                <button>Test2</button>
+                <button>generate maze</button>
+                <button>find shortest path</button>
             </div>
         </div>
     </body>
