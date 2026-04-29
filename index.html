@@ -25,7 +25,7 @@
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                color: #272a36; 
+                color: #eca221; 
             }
 
             button
@@ -157,24 +157,7 @@
                       
                 for(let r = 0; r <= N; r++)
                    for(let c = 0; c <= N; c++)
-                      ctx.fillRect(c*CELL, r*CELL, W, W);
-
-                if (pathCells.length > 1)
-                {
-                    ctx.save();
-                    ctx.strokeStlye = '#f59e0b';
-                    ctx.lineWidth = 3;
-                    ctx.lineJoin = ctx.lineCap = 'round';
-                    ctx.beginPath();
-                    for (let i = 0; i < pathCells.length; i++)
-                    {
-                        const x = W + pathCells[i][1]*CELL + (CELL-W)/2;
-                        const y = W + pathCells[i][0]*CELL + (CELL-W)/2;
-                        i === 0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
-                    }
-                    ctx.stroke();
-                    ctx.restore();
-                }      
+                      ctx.fillRect(c*CELL, r*CELL, W, W);  
                     
                 //start cell label green clr
                 ctx.fillStyle = '#22c55e';
@@ -193,6 +176,23 @@
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
                 ctx.fillText('F', W + 7*CELL + (CELL-W+W), W + 7*CELL + (CELL-W+W));
+
+                if (pathCells.length > 1)
+                {
+                    ctx.save();
+                    ctx.strokeStyle = '#eca221';
+                    ctx.lineWidth = 3;
+                    ctx.lineJoin = ctx.lineCap = 'round';
+                    ctx.beginPath();
+                    for (let i = 0; i < pathCells.length; i++)
+                    {
+                        const x = W + pathCells[i][1]*CELL + (CELL-W)/2;
+                        const y = W + pathCells[i][0]*CELL + (CELL-W)/2;
+                        i === 0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
+                    }
+                    ctx.stroke();
+                    ctx.restore();
+                }    
             }
 
             function clearAllWalls()
