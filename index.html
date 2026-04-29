@@ -15,19 +15,18 @@
             .box
             {
                 width: 45vw;
-                height: 45vh;
+                aspect-ratio: 1;
                 margin-left: 2rem;
                 border-radius: 16px;
                 border: 1px solid #3f3f3f;
                 background: #272727;
                 padding: 1.5rem;
-                min-width: 200px;
-                min-height: 200px;
                 box-sizing: border-box;
                 display: flex;
                 align-items: center;
                 justify-content: center;
             }
+            
             button
             {
                 width:250px;
@@ -79,11 +78,14 @@
             cv.width = SZ; cv.height = SZ;
             const ctx = cv.getContext('2d');
 
-            function resize()
+            function resize() 
             {
-                const size = cv.parentElement.clientWidth - 48;
-                cv.style.width = size + 'px';
-                cv.style.height = size + 'px';
+               const box = cv.parentElement;
+               const style = getComputedStyle(box);
+               const padding = parseFloat(style.paddingLeft) + parseFloat(style.paddingRight);
+               const size = box.clientWidth - padding;
+               cv.style.width = size + 'px';
+               cv.style.height = size + 'px';
             }
 
             resize();
