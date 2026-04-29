@@ -66,9 +66,9 @@
             </div> 
             <div class="side">
                 <button onclick="generate()">generate maze</button>
-                <button>find shortest path</button>
+                <button onclick="solve()">find shortest path</button>
                 <button onclick="clearAllWalls()">Clear all walls</button>
-                <button>Clear generated path</button>
+                <button onclick="pathCells=[]; draw();">Clear generated path</button>
             </div>
         </div>
 
@@ -95,6 +95,46 @@
             const hWalls = Array.from({length:N+1}, () => Array(N).fill(true));
             const vWalls = Array.from({length:N}, () => Array(N+1).fill(true)); 
 
+            let pathCells = [];
+
+            function solve()
+            {
+                const finish = new Set([[7,7],[7,8],[8,7],[8,8]].map(([r,c])=>r*N+c));
+                const prev = Array.from({length:N},()=>Array(N).fill(null));
+                const seen = Array.from({length:N},()=>Array(N).fill(false));
+                const q = [[0,0]];
+                seen[0][0] = true; 
+                
+                while (q.length) 
+                {
+                  const [r,c] = q.shift();
+                  if (finish.has(r*N+c)) 
+                    {
+                        const path = [];
+                        let cur = [r,c];
+                        while (cur) 
+                           { 
+                                path.unshift(cur); cur = prev[cur[0]][cur[1]]; 
+                           }
+                        pathCells = path;
+                        draw();
+                        return;
+                    }
+                  for (const [nr,nc,open] of [
+                    [r-1,c, !hWalls[r][c]],
+                    [r+1,c, !hWalls[r+1][c]],
+                    [r,c-1, !vWalls[r][c]],
+                    [r,c+1, !vWalls[r][c+1]],
+                  ]) 
+                    {
+                        if (nr<0||nr>=N||nc<0||nc>=N||!open||seen[nr][nc]) continue;
+                        seen[nr][nc]=true; prev[nr][nc]=[r,c]; q.push([nr,nc]);
+                    }
+                }
+                pathCells = [];
+                draw();
+            }
+
             function draw()
             {
                 ctx.fillStyle = '#1a1f35'; // cell side clr
@@ -118,6 +158,23 @@
                 for(let r = 0; r <= N; r++)
                    for(let c = 0; c <= N; c++)
                       ctx.fillRect(c*CELL, r*CELL, W, W);
+
+                if (pathCells.length > 1)
+                {
+                    ctx.save();
+                    ctx.strokeStlye = '#f59e0b';
+                    ctx.lineWidth = 3;
+                    ctx.lineJoin = ctx.lineCap = 'round';
+                    ctx.beginPath();
+                    for (let i = 0; i < pathCells.length; i++)
+                    {
+                        const x = W + pathCells[i][1]*CELL + (CELL-W)/2;
+                        const y = W + pathCells[i][0]*CELL + (CELL-W)/2;
+                        i === 0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
+                    }
+                    ctx.stroke();
+                    ctx.restore();
+                }      
                     
                 //start cell label green clr
                 ctx.fillStyle = '#22c55e';
@@ -161,7 +218,7 @@
                 vWalls[7][8] = false; vWalls[8][8] = false;
             }
 
-            function generate()
+            function generate()     
             {
                 for(let r = 0;  r <= N; r++) for (let c = 0; c < N; c++) hWalls[r][c] = true;
                 for(let r = 0;  r < N; r++) for (let c = 0; c <+ N; c++) vWalls[r][c] = true;
