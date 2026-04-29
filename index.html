@@ -25,8 +25,9 @@
                 display: flex;
                 align-items: center;
                 justify-content: center;
+                color: #272a36; 
             }
-            
+
             button
             {
                 width:250px;
@@ -96,16 +97,16 @@
 
             function draw()
             {
-                ctx.fillStyle = '#272727';
+                ctx.fillStyle = '#1a1f35'; // cell side clr
                 ctx.fillRect(0,0,SZ,SZ);
 
                 for (let r = 0; r < N; r++)
                    for (let c = 0; c < N; c++)
                    {
-                     ctx.fillStyle = '#1e1e1e';
+                     ctx.fillStyle = '#272a36'; // cell clr
                      ctx.fillRect(W + c*CELL, W + r*CELL, CELL-W, CELL-W);
                    }
-                ctx.fillStyle = '#cbd5e1';
+                ctx.fillStyle = '#b1bbcf'; // wall clr
                 for (let r = 0; r <= N; r++)
                    for (let c = 0; c < N; c++)
                       if (hWalls[r][c]) ctx.fillRect(W + c*CELL, r*CELL, CELL-W, W);  
@@ -116,7 +117,25 @@
                       
                 for(let r = 0; r <= N; r++)
                    for(let c = 0; c <= N; c++)
-                      ctx.fillRect(c*CELL, r*CELL, W, W);        
+                      ctx.fillRect(c*CELL, r*CELL, W, W);
+                    
+                //start cell label green clr
+                ctx.fillStyle = '#22c55e';
+                ctx.fillRect(W,W,CELL-W,CELL-W); 
+                ctx.fillStyle = '#ffffff';
+                ctx.font = 'Instrument Serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('S', W + (CELL-W)/2, W + (CELL-W)/2);
+
+                //end cell x4 label red clr
+                ctx.fillStyle = '#ef4444';
+                ctx.fillRect(W + 7*CELL, W + 7*CELL, 2*(CELL-W)+W, 2*(CELL-W)+W);
+                ctx.fillStyle = '#ffffff';
+                ctx.font = 'Instrument Serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('F', W + 7*CELL + (CELL-W+W), W + 7*CELL + (CELL-W+W));
             }
 
             cv.addEventListener('click', e =>
@@ -127,7 +146,7 @@
                 const T = 7;
 
                 for(let r = 1; r < N; r++)
-                   for(let c = 1; c < N; c++)
+                   for(let c = 0; c < N; c++)
                     {
                         const wx = W + c*CELL, wy = r*CELL;
                         if (mx>=wx-T && mx<=wx+(CELL-W)+T && my>=wy-T && my<=wy+W+T)
