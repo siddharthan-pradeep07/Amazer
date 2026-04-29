@@ -65,7 +65,7 @@
                 <canvas id="cv"></canvas>
             </div> 
             <div class="side">
-                <button>generate maze</button>
+                <button onclick="generate()">generate maze</button>
                 <button>find shortest path</button>
                 <button onclick="clearAllWalls()">Clear all walls</button>
                 <button>Clear generated path</button>
@@ -149,6 +149,66 @@
                       if(c !== 0 && c !== N) vWalls[r][c] = false;
                 
                 draw();      
+            }
+
+            function lockFinishWalls()
+            {
+                hWalls[7][7] = true;  hWalls[7][8] = true;   
+                hWalls[9][7] = true;  hWalls[9][8] = true;
+                vWalls[7][7] = true;  vWalls[7][9] = true;
+                vWalls[8][7] = true;  vWalls[7][7] = true;
+                hWalls[8][7] = false; hWalls[8][8] = false;
+                vWalls[7][8] = false; vWalls[8][8] = false;
+            }
+
+            function generate()
+            {
+                for(let r = 0;  r <= N; r++) for (let c = 0; c < N; c++) hWalls[r][c] = true;
+                for(let r = 0;  r < N; r++) for (let c = 0; c <+ N; c++) vWalls[r][c] = true;
+                const visited = Array.from({length:N}, () => Array(N).fill(false));
+                [[7,7],[7,8],[8,7],[8,8]].forEach(([r,c]) => visited[r][c] = true);
+                const stack = [[0,0]];
+                visited[0][0] = true;
+                const dirs = [[0,1],[1,0],[0,-1],[-1,0]];
+
+                while (stack.length)
+                {
+                    const [r, col] = stack[stack.length-1];
+                    const sh = dirs.slice().sort(() => Math.random()-0.5);
+                    let moved = false;
+                    for (const [dr, dc] of sh)
+                    {
+                        const nr = r+dr, nc = col+dc;
+                        if (nr>=0 && nr<N && nc>=0 && nc<N && !visited[nr][nc]) 
+                        {
+                           visited[nr][nc] = true;
+                           if (dr === 0)  vWalls[r][dc > 0 ? col+1 : col] = false;
+                           else hWalls [dr > 0 ? r+1 : r][col] = false;
+                           stack.push([nr, nc]);
+                           moved = true; break;        
+                        }
+                    }
+                    if (!moved) stack.pop();
+                }
+
+                lockFinishWalls();
+
+                const borders = 
+                [
+                    {type:'h',r:7,c:7},{type:'h',r:7,c:8},
+                    {type:'h',r:9,c:7},{type:'h',r:9,c:8},
+                    {type:'v',r:7,c:7},{type:'v',r:7,c:9},
+                    {type:'v',r:8,c:7},{type:'v',r:8,c:9},
+                ].sort(() => Math.random()-0.5);
+
+                const entryWall = borders[0];
+
+                if(entryWall.type === 'h') hWalls[entryWall.r][entryWall.c] = false;
+                else vWalls[entryWall.r][entryWall.c] = false;
+
+
+
+                draw();
             }
 
             cv.addEventListener('click', e =>
