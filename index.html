@@ -61,7 +61,74 @@
             <div class="side">
                 <button>generate maze</button>
                 <button>find shortest path</button>
+                <button>Clear all walls</button>
+                <button>Clear generated path</button>
             </div>
         </div>
+
+        <script>
+            const N = 16, CELL = 26, W = 2;
+            const SZ = N * CELL + W;
+            const cv = document.getElementById('cv');
+            cv.width = SZ; cv.height = SZ;
+            const ctx = cv.getContext('2d');
+
+            const hWalls = Array.from({length:N+1}, () => Array(N).fill(true));
+            const vWalls = Array.from({length:N}, () => Array(N+1).fill(true)); 
+
+            function draw()
+            {
+                ctx.fillStyle = '#272727';
+                ctx.fillReact(0,0,SZ,SZ);
+
+                for (let r = 0; r < N; r++)
+                   for (let c = 0; c < N; c++)
+                   {
+                     ctx.fillStyle = '#1e1e1e';
+                     ctx.fillRect(W + c*CELL, W + r*CELL, CELL-W, CELL-W);
+                   }
+                ctx.fillStyle = '#cbd5e1';
+                for (let r = 0; r <= N; r++)
+                   for (let c = 0; c < N; c++)
+                      if (hWalls[r][c]) ctx.fillRect(W + c*CELL, r*CELL, CELL-W, W);  
+                      
+                for (let r = 0; r < N; r++)
+                   for (let c = 0; c <= N; c++)
+                      if (vWalls[r][c]) ctx.fillRect(c*CELL, W + r*CELL, W, CELL-W);  
+                      
+                for(let r = 0; r <= N; r++)
+                   for(let c = 0; c <= N; c++)
+                      ctx.fillRect(c*CELL, r*CELL, W, W);        
+            }
+
+            cv.addEventListener('click', e =>
+            {
+                const rect = cv.getBoundingClientRect();
+                const mx = (e.clientX - rect.left) * (cv.width / rect.width);
+                const my = (e.clientY - rect.top) * (cv.height / rect.height);
+                const T = 7;
+
+                for(let r = 1; r < N; r++)
+                   for(let c = 1; c < N; c++)
+                    {
+                        const wx = W + c*CELL, wy = r*CELL;
+                        if (mx>=wx-T && mx<=wx+(CELL-W)+T && my>=wy-T && my<=wy+W+T)
+                        { 
+                            hwalls[r][c] = !hwalls[r][c]; draw(); return;
+                        }
+                    }
+
+                for (let r = 0; r < N; r++)
+                   for (let c = 1; c < N; c++) 
+                   {
+                        const wx = c*CELL, wy = W + r*CELL;
+                        if (mx>=wx-T && mx<=wx+W+T && my>=wy-T && my<=wy+(CELL-W)+T) 
+                        {
+                            vWalls[r][c] = !vWalls[r][c]; draw(); return;
+                        }
+                    }    
+            });
+
+        </script>
     </body>
 </html>
