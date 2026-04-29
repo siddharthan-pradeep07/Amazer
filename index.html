@@ -79,7 +79,7 @@
             function draw()
             {
                 ctx.fillStyle = '#272727';
-                ctx.fillReact(0,0,SZ,SZ);
+                ctx.fillRect(0,0,SZ,SZ);
 
                 for (let r = 0; r < N; r++)
                    for (let c = 0; c < N; c++)
@@ -90,11 +90,11 @@
                 ctx.fillStyle = '#cbd5e1';
                 for (let r = 0; r <= N; r++)
                    for (let c = 0; c < N; c++)
-                      if (hWalls[r][c]) ctx.fillReact(W + c*CELL, r*CELL, CELL-W, W);  
+                      if (hWalls[r][c]) ctx.fillRect(W + c*CELL, r*CELL, CELL-W, W);  
                       
                 for (let r = 0; r < N; r++)
                    for (let c = 0; c <= N; c++)
-                      if (vWalls[r][c]) ctx.fillReact(c*CELL, W + r*CELL, W, CELL-W);  
+                      if (vWalls[r][c]) ctx.fillRect(c*CELL, W + r*CELL, W, CELL-W);  
                       
                 for(let r = 0; r <= N; r++)
                    for(let c = 0; c <= N; c++)
