@@ -64,12 +64,13 @@
             <canvas id="cv"></canvas>
         </div>
         <div class="side">
-            <button onclick="generate()">generate maze</button>
-            <button onclick="solve()">find shortest path</button>
+            <button onclick="generate()">Generate maze</button>
+            <button onclick="solve()">find path (shortest)</button>
+            <button onclick="pathCells=[]; resetStats(); draw();">Clear path</button>
             <button onclick="clearAllWalls()">Clear all walls</button>
-            <button onclick="pathCells=[]; resetStats(); draw();">Clear generated path</button>
+            <button onclick="addAllWalls()">Add all walls</button>
             <div style="color:#ffffff; font-family: Instrument Serif; font-size: 20px; border: 1px solid #3f3f3f; border-radius: 16px; padding: 1rem; margin-top: 4px;">
-                border-radius: 16px; padding: 1rem; margin-top: 4px;">
+                <B>Data:</B>
                 <div>Total cells: <span id="sCells">—</span></div>
                 <div>Right turn/s: <span id="sRight">—</span></div>
                 <div>Left turn/s: <span id="sLeft">—</span></div>
@@ -147,6 +148,19 @@
             {
                 document.getElementById(id).textContent = '—';
             });
+        }
+
+        function addAllWalls()
+        {
+            for(let r = 1; r < N; r++)
+               for(let c =0; c < N; c++)
+                  hWalls[r][c] = true;
+
+            for(let r = 1; r < N; r++)
+               for(let c =0; c < N; c++)
+                  vWalls[r][c] = true; 
+            
+            draw();      
         }
 
         function draw() {
