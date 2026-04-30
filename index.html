@@ -27,10 +27,20 @@
             color: #eca221;
         }
 
+        .btn-group
+        {
+            display: flex;
+            flex-direction: column;
+            gap: 13px;
+            border: 2px solid #a79a7e;
+            border-radius: 16px;
+            padding: 15px;
+        }
+
         button {
-            width: 250px;
+            width: 260px;
             height: 70px;
-            margin-right: 2rem;
+            margin-right: 0;
             border-radius: 16px;
             color: rgb(255, 232, 198);
             font-size: 28px;
@@ -64,18 +74,33 @@
             <canvas id="cv"></canvas>
         </div>
         <div class="side">
+
+        <div class="btn-group">
             <button onclick="generate()">Generate maze</button>
+        </div>    
+
+        <div class="btn-group">
             <button onclick="solve()">find path (shortest)</button>
             <button onclick="pathCells=[]; resetStats(); draw();">Clear path</button>
+        </div>
+
+        <div class="btn-group">   
             <button onclick="clearAllWalls()">Clear all walls</button>
             <button onclick="addAllWalls()">Add all walls</button>
-            <div style="color:#ffffff; font-family: Instrument Serif; font-size: 20px; border: 1px solid #3f3f3f; border-radius: 16px; padding: 1rem; margin-top: 4px;">
+        </div>
+
+            <div style="color:#ffffff; font-family: Instrument Serif; font-size: 26px; border: 1px solid #3f3f3f; border-radius: 16px; padding: 1rem; margin-top: 4px;">
                 <B>Data:</B>
-                <div>Total cells: <span id="sCells">—</span></div>
-                <div>Right turn/s: <span id="sRight">—</span></div>
-                <div>Left turn/s: <span id="sLeft">—</span></div>
-                <div>Straight/s: <span id="sStraight">—</span></div>
+                <div>Total cells:<span id="sCells"> —</span></div>
+                <div>Right turns:<span id="sRight"> —</span></div>
+                <div>Left turns:<span id="sLeft"> —</span></div>
+                <div>Straights:<span id="sStraight"> —</span></div>
             </div>
+
+        <div style="color:#ffffff; font-family: Instrument Serif; font-size: 26px; border: 1px solid #3f3f3f; border-radius: 16px; padding: 1rem; margin-top: 4px;">
+            <b><i>Project by siddharthan.</i></b>
+        </div>
+
         </div>
     </div>
 
@@ -156,8 +181,8 @@
                for(let c =0; c < N; c++)
                   hWalls[r][c] = true;
 
-            for(let r = 1; r < N; r++)
-               for(let c =0; c < N; c++)
+            for(let r = 0; r < N; r++)
+               for(let c =!; c < N; c++)
                   vWalls[r][c] = true; 
             
             draw();      
