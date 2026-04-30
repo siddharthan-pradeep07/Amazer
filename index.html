@@ -1,302 +1,327 @@
 <html>
-    <head>
-    <title>Amazer</title>  
-      <link rel="preconnect" href="https://fonts.googleapis.com">
-      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-      <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">  
-        <style>
-            body
-            {
-              margin: 0;
-              padding: 2rem;
-              font-family: sans-serif;
-              background: #2b2b2b;
-            }
-            .box
-            {
-                width: 45vw;
-                aspect-ratio: 1;
-                margin-left: 2rem;
-                border-radius: 16px;
-                border: 1px solid #3f3f3f;
-                background: #272727;
-                padding: 1.5rem;
-                box-sizing: border-box;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                color: #eca221; 
-            }
 
-            button
-            {
-                width:250px;
-                height:70px;
-                margin-right: 2rem;
-                border-radius: 16px;
-                color: rgb(255, 232, 198);
-                font-size: 28px;
-                font-family: Instrument Serif;
-                border: 1px solid #3f3f3f;
-                background: #272727;
-            }
-            button:hover
-            {
-                cursor: pointer;
-                background: #2b2929;
-            }
-            .layout
-            {
-                display: flex;
-                align-items: flex-start;
-                gap: 24px;
-            }
-            .side
-            { 
-                display: flex;
-                flex-direction: column;
-                gap:10px;
-            }
-        </style>
-    </head>
-    <body>
-        <div class="layout">
-            <div class="box">
-                <canvas id="cv"></canvas>
-            </div> 
-            <div class="side">
-                <button onclick="generate()">generate maze</button>
-                <button onclick="solve()">find shortest path</button>
-                <button onclick="clearAllWalls()">Clear all walls</button>
-                <button onclick="pathCells=[]; draw();">Clear generated path</button>
+<head>
+    <title>Amazer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 2rem;
+            font-family: sans-serif;
+            background: #2b2b2b;
+        }
+
+        .box {
+            width: 45vw;
+            aspect-ratio: 1;
+            margin-left: 2rem;
+            border-radius: 16px;
+            border: 1px solid #3f3f3f;
+            background: #272727;
+            padding: 1.5rem;
+            box-sizing: border-box;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #eca221;
+        }
+
+        button {
+            width: 250px;
+            height: 70px;
+            margin-right: 2rem;
+            border-radius: 16px;
+            color: rgb(255, 232, 198);
+            font-size: 28px;
+            font-family: Instrument Serif;
+            border: 1px solid #3f3f3f;
+            background: #272727;
+        }
+
+        button:hover {
+            cursor: pointer;
+            background: #2b2929;
+        }
+
+        .layout {
+            display: flex;
+            align-items: flex-start;
+            gap: 24px;
+        }
+
+        .side {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="layout">
+        <div class="box">
+            <canvas id="cv"></canvas>
+        </div>
+        <div class="side">
+            <button onclick="generate()">generate maze</button>
+            <button onclick="solve()">find shortest path</button>
+            <button onclick="clearAllWalls()">Clear all walls</button>
+            <button onclick="pathCells=[]; resetStats(); draw();">Clear generated path</button>
+            <div style="color:#ffffff" ; font-family: Instrument Serif; font-size: 20px; border: 1px solid #3f3f3f;
+                border-radius: 16px; padding: 1rem; margin-top: 4px;">
+                <div>Total cells: <span id="sCells">—</span></div>
+                <div>Right turn/s: <span id="sRight">—</span></div>
+                <div>Left turn/s: <span id="sLeft">—</span></div>
+                <div>Straight/s: <span id="sStraight">—</span></div>
             </div>
         </div>
+    </div>
 
-        <script>
-            const N = 16, CELL = 26, W = 2;
-            const SZ = N * CELL + W;
-            const cv = document.getElementById('cv');
-            cv.width = SZ; cv.height = SZ;
-            const ctx = cv.getContext('2d');
+    <script>
+        const N = 16, CELL = 26, W = 2;
+        const SZ = N * CELL + W;
+        const cv = document.getElementById('cv');
+        cv.width = SZ; cv.height = SZ;
+        const ctx = cv.getContext('2d');
 
-            function resize() 
-            {
-               const box = cv.parentElement;
-               const style = getComputedStyle(box);
-               const padding = parseFloat(style.paddingLeft) + parseFloat(style.paddingRight);
-               const size = box.clientWidth - padding;
-               cv.style.width = size + 'px';
-               cv.style.height = size + 'px';
-            }
+        function resize() {
+            const box = cv.parentElement;
+            const style = getComputedStyle(box);
+            const padding = parseFloat(style.paddingLeft) + parseFloat(style.paddingRight);
+            const size = box.clientWidth - padding;
+            cv.style.width = size + 'px';
+            cv.style.height = size + 'px';
+        }
 
-            resize();
-            window.addEventListener('resize', resize);
+        resize();
+        window.addEventListener('resize', resize);
 
-            const hWalls = Array.from({length:N+1}, () => Array(N).fill(true));
-            const vWalls = Array.from({length:N}, () => Array(N+1).fill(true)); 
+        const hWalls = Array.from({ length: N + 1 }, () => Array(N).fill(true));
+        const vWalls = Array.from({ length: N }, () => Array(N + 1).fill(true));
 
-            let pathCells = [];
+        let pathCells = [];
 
-            function solve()
-            {
-                const finish = new Set([[7,7],[7,8],[8,7],[8,8]].map(([r,c])=>r*N+c));
-                const prev = Array.from({length:N},()=>Array(N).fill(null));
-                const seen = Array.from({length:N},()=>Array(N).fill(false));
-                const q = [[0,0]];
-                seen[0][0] = true; 
-                
-                while (q.length) 
-                {
-                  const [r,c] = q.shift();
-                  if (finish.has(r*N+c)) 
-                    {
-                        const path = [];
-                        let cur = [r,c];
-                        while (cur) 
-                           { 
-                                path.unshift(cur); cur = prev[cur[0]][cur[1]]; 
-                           }
-                        pathCells = path;
-                        draw();
-                        return;
+        function solve() {
+            const finish = new Set([[7, 7], [7, 8], [8, 7], [8, 8]].map(([r, c]) => r * N + c));
+            const prev = Array.from({ length: N }, () => Array(N).fill(null));
+            const seen = Array.from({ length: N }, () => Array(N).fill(false));
+            const q = [[0, 0]];
+            seen[0][0] = true;
+
+            while (q.length) {
+                const [r, c] = q.shift();
+                if (finish.has(r * N + c)) {
+                    const path = [];
+                    let cur = [r, c];
+                    while (cur) {
+                        path.unshift(cur); cur = prev[cur[0]][cur[1]];
                     }
-                  for (const [nr,nc,open] of [
-                    [r-1,c, !hWalls[r][c]],
-                    [r+1,c, !hWalls[r+1][c]],
-                    [r,c-1, !vWalls[r][c]],
-                    [r,c+1, !vWalls[r][c+1]],
-                  ]) 
-                    {
-                        if (nr<0||nr>=N||nc<0||nc>=N||!open||seen[nr][nc]) continue;
-                        seen[nr][nc]=true; prev[nr][nc]=[r,c]; q.push([nr,nc]);
-                    }
+                    pathCells = path;
+                    draw();
+                    return;
                 }
-                pathCells = [];
-                draw();
-            }
-
-            function draw()
-            {
-                ctx.fillStyle = '#1a1f35'; // cell side clr
-                ctx.fillRect(0,0,SZ,SZ);
-
-                for (let r = 0; r < N; r++)
-                   for (let c = 0; c < N; c++)
-                   {
-                     ctx.fillStyle = '#272a36'; // cell clr
-                     ctx.fillRect(W + c*CELL, W + r*CELL, CELL-W, CELL-W);
-                   }
-                ctx.fillStyle = '#b1bbcf'; // wall clr
-                for (let r = 0; r <= N; r++)
-                   for (let c = 0; c < N; c++)
-                      if (hWalls[r][c]) ctx.fillRect(W + c*CELL, r*CELL, CELL-W, W);  
-                      
-                for (let r = 0; r < N; r++)
-                   for (let c = 0; c <= N; c++)
-                      if (vWalls[r][c]) ctx.fillRect(c*CELL, W + r*CELL, W, CELL-W);  
-                      
-                for(let r = 0; r <= N; r++)
-                   for(let c = 0; c <= N; c++)
-                      ctx.fillRect(c*CELL, r*CELL, W, W);  
-                    
-                //start cell label green clr
-                ctx.fillStyle = '#22c55e';
-                ctx.fillRect(W,W,CELL-W,CELL-W); 
-                ctx.fillStyle = '#ffffff';
-                ctx.font = 'Instrument Serif';
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle';
-                ctx.fillText('S', W + (CELL-W)/2, W + (CELL-W)/2);
-
-                //end cell x4 label red clr
-                ctx.fillStyle = '#ef4444';
-                ctx.fillRect(W + 7*CELL, W + 7*CELL, 2*(CELL-W)+W, 2*(CELL-W)+W);
-                ctx.fillStyle = '#ffffff';
-                ctx.font = 'Instrument Serif';
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle';
-                ctx.fillText('F', W + 7*CELL + (CELL-W+W), W + 7*CELL + (CELL-W+W));
-
-                if (pathCells.length > 1)
-                {
-                    ctx.save();
-                    ctx.strokeStyle = '#eca221';
-                    ctx.lineWidth = 2;
-                    ctx.lineJoin = ctx.lineCap = 'round';
-                    ctx.beginPath();
-                    for (let i = 0; i < pathCells.length; i++)
-                    {
-                        const x = W + pathCells[i][1]*CELL + (CELL-W)/2;
-                        const y = W + pathCells[i][0]*CELL + (CELL-W)/2;
-                        i === 0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
-                    }
-                    ctx.stroke();
-                    ctx.restore();
-                }    
-            }
-
-            function clearAllWalls()
-            {
-                for(let r = 0; r <= N; r++)
-                   for(let c = 0; c < N; c++)
-                      if(r !== 0 && r !== N) hWalls[r][c] = false;
-
-                for(let r = 0; r < N; r++)
-                   for(let c = 0; c <= N; c++)  
-                      if(c !== 0 && c !== N) vWalls[r][c] = false;
-                
-                draw();      
-            }
-
-            function lockFinishWalls()
-            {
-                hWalls[7][7] = true;  hWalls[7][8] = true;   
-                hWalls[9][7] = true;  hWalls[9][8] = true;
-                vWalls[7][7] = true;  vWalls[7][9] = true;
-                vWalls[8][7] = true;  vWalls[7][7] = true;
-                hWalls[8][7] = false; hWalls[8][8] = false;
-                vWalls[7][8] = false; vWalls[8][8] = false;
-            }
-
-            function generate()     
-            {
-                pathCells = [];
-                for(let r = 0;  r <= N; r++) for (let c = 0; c < N; c++) hWalls[r][c] = true;
-                for(let r = 0;  r < N; r++) for (let c = 0; c <+ N; c++) vWalls[r][c] = true;
-                const visited = Array.from({length:N}, () => Array(N).fill(false));
-                [[7,7],[7,8],[8,7],[8,8]].forEach(([r,c]) => visited[r][c] = true);
-                const stack = [[0,0]];
-                visited[0][0] = true;
-                const dirs = [[0,1],[1,0],[0,-1],[-1,0]];
-
-                while (stack.length)
-                {
-                    const [r, col] = stack[stack.length-1];
-                    const sh = dirs.slice().sort(() => Math.random()-0.5);
-                    let moved = false;
-                    for (const [dr, dc] of sh)
-                    {
-                        const nr = r+dr, nc = col+dc;
-                        if (nr>=0 && nr<N && nc>=0 && nc<N && !visited[nr][nc]) 
-                        {
-                           visited[nr][nc] = true;
-                           if (dr === 0)  vWalls[r][dc > 0 ? col+1 : col] = false;
-                           else hWalls [dr > 0 ? r+1 : r][col] = false;
-                           stack.push([nr, nc]);
-                           moved = true; break;        
-                        }
-                    }
-                    if (!moved) stack.pop();
+                for (const [nr, nc, open] of [
+                    [r - 1, c, !hWalls[r][c]],
+                    [r + 1, c, !hWalls[r + 1][c]],
+                    [r, c - 1, !vWalls[r][c]],
+                    [r, c + 1, !vWalls[r][c + 1]],
+                ]) {
+                    if (nr < 0 || nr >= N || nc < 0 || nc >= N || !open || seen[nr][nc]) continue;
+                    seen[nr][nc] = true; prev[nr][nc] = [r, c]; q.push([nr, nc]);
                 }
-
-                lockFinishWalls();
-
-                const borders = 
-                [
-                    {type:'h',r:7,c:7},{type:'h',r:7,c:8},
-                    {type:'h',r:9,c:7},{type:'h',r:9,c:8},
-                    {type:'v',r:7,c:7},{type:'v',r:7,c:9},
-                    {type:'v',r:8,c:7},{type:'v',r:8,c:9},
-                ].sort(() => Math.random()-0.5);
-
-                const entryWall = borders[0];
-
-                if(entryWall.type === 'h') hWalls[entryWall.r][entryWall.c] = false;
-                else vWalls[entryWall.r][entryWall.c] = false;
-
-
-
-                draw();
             }
+            pathCells = [];
 
-            cv.addEventListener('click', e =>
+            const s = analyzePathStats(path);
+            document.getElementById('sCells').textContent = path.length;
+            document.getElementById('sRight').textContent = s.right;
+            document.getElementById('sLeft').textContent = s.left;
+            document.getElementById('sStraight').textContent = s.straight;
+
+            draw();
+        }
+
+        function resetStats() 
+        {
+            ['sCells', 'sRight', 'sLeft', 'sStraight'].forEach(id => 
             {
-                const rect = cv.getBoundingClientRect();
-                const mx = (e.clientX - rect.left) * (cv.width / rect.width);
-                const my = (e.clientY - rect.top) * (cv.height / rect.height);
-                const T = 7;
-
-                for(let r = 1; r < N; r++)
-                   for(let c = 0; c < N; c++)
-                    {
-                        const wx = W + c*CELL, wy = r*CELL;
-                        if (mx>=wx-T && mx<=wx+(CELL-W)+T && my>=wy-T && my<=wy+W+T)
-                        { 
-                            hWalls[r][c] = !hWalls[r][c]; draw(); return;
-                        }
-                    }
-
-                for (let r = 0; r < N; r++)
-                   for (let c = 1; c < N; c++) 
-                   {
-                        const wx = c*CELL, wy = W + r*CELL;
-                        if (mx>=wx-T && mx<=wx+W+T && my>=wy-T && my<=wy+(CELL-W)+T) 
-                        {
-                            vWalls[r][c] = !vWalls[r][c]; draw(); return;
-                        }
-                    }    
+                document.getElementById(id).textContent = '—';
             });
-          draw();
-        </script>
-    </body>
+        }
+
+        function draw() {
+            ctx.fillStyle = '#1a1f35'; // cell side clr
+            ctx.fillRect(0, 0, SZ, SZ);
+
+            for (let r = 0; r < N; r++)
+                for (let c = 0; c < N; c++) {
+                    ctx.fillStyle = '#272a36'; // cell clr
+                    ctx.fillRect(W + c * CELL, W + r * CELL, CELL - W, CELL - W);
+                }
+            ctx.fillStyle = '#b1bbcf'; // wall clr
+            for (let r = 0; r <= N; r++)
+                for (let c = 0; c < N; c++)
+                    if (hWalls[r][c]) ctx.fillRect(W + c * CELL, r * CELL, CELL - W, W);
+
+            for (let r = 0; r < N; r++)
+                for (let c = 0; c <= N; c++)
+                    if (vWalls[r][c]) ctx.fillRect(c * CELL, W + r * CELL, W, CELL - W);
+
+            for (let r = 0; r <= N; r++)
+                for (let c = 0; c <= N; c++)
+                    ctx.fillRect(c * CELL, r * CELL, W, W);
+
+            //start cell label green clr
+            ctx.fillStyle = '#22c55e';
+            ctx.fillRect(W, W, CELL - W, CELL - W);
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'Instrument Serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('S', W + (CELL - W) / 2, W + (CELL - W) / 2);
+
+            //end cell x4 label red clr
+            ctx.fillStyle = '#ef4444';
+            ctx.fillRect(W + 7 * CELL, W + 7 * CELL, 2 * (CELL - W) + W, 2 * (CELL - W) + W);
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'Instrument Serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('F', W + 7 * CELL + (CELL - W + W), W + 7 * CELL + (CELL - W + W));
+
+            if (pathCells.length > 1) {
+                ctx.save();
+                ctx.strokeStyle = '#eca221';
+                ctx.lineWidth = 2;
+                ctx.lineJoin = ctx.lineCap = 'round';
+                ctx.beginPath();
+                for (let i = 0; i < pathCells.length; i++) {
+                    const x = W + pathCells[i][1] * CELL + (CELL - W) / 2;
+                    const y = W + pathCells[i][0] * CELL + (CELL - W) / 2;
+                    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+                }
+                ctx.stroke();
+                ctx.restore();
+            }
+        }
+
+        function clearAllWalls() {
+            for (let r = 0; r <= N; r++)
+                for (let c = 0; c < N; c++)
+                    if (r !== 0 && r !== N) hWalls[r][c] = false;
+
+            for (let r = 0; r < N; r++)
+                for (let c = 0; c <= N; c++)
+                    if (c !== 0 && c !== N) vWalls[r][c] = false;
+
+            draw();
+        }
+
+        function lockFinishWalls() {
+            hWalls[7][7] = true; hWalls[7][8] = true;
+            hWalls[9][7] = true; hWalls[9][8] = true;
+            vWalls[7][7] = true; vWalls[7][9] = true;
+            vWalls[8][7] = true; vWalls[7][7] = true;
+            hWalls[8][7] = false; hWalls[8][8] = false;
+            vWalls[7][8] = false; vWalls[8][8] = false;
+        }
+
+        function generate() {
+            pathCells = [];
+            for (let r = 0; r <= N; r++) for (let c = 0; c < N; c++) hWalls[r][c] = true;
+            for (let r = 0; r < N; r++) for (let c = 0; c < + N; c++) vWalls[r][c] = true;
+            const visited = Array.from({ length: N }, () => Array(N).fill(false));
+            [[7, 7], [7, 8], [8, 7], [8, 8]].forEach(([r, c]) => visited[r][c] = true);
+            const stack = [[0, 0]];
+            visited[0][0] = true;
+            const dirs = [[0, 1], [1, 0], [0, -1], [-1, 0]];
+
+            while (stack.length) {
+                const [r, col] = stack[stack.length - 1];
+                const sh = dirs.slice().sort(() => Math.random() - 0.5);
+                let moved = false;
+                for (const [dr, dc] of sh) {
+                    const nr = r + dr, nc = col + dc;
+                    if (nr >= 0 && nr < N && nc >= 0 && nc < N && !visited[nr][nc]) {
+                        visited[nr][nc] = true;
+                        if (dr === 0) vWalls[r][dc > 0 ? col + 1 : col] = false;
+                        else hWalls[dr > 0 ? r + 1 : r][col] = false;
+                        stack.push([nr, nc]);
+                        moved = true; break;
+                    }
+                }
+                if (!moved) stack.pop();
+            }
+
+            lockFinishWalls();
+
+            const borders =
+                [
+                    { type: 'h', r: 7, c: 7 }, { type: 'h', r: 7, c: 8 },
+                    { type: 'h', r: 9, c: 7 }, { type: 'h', r: 9, c: 8 },
+                    { type: 'v', r: 7, c: 7 }, { type: 'v', r: 7, c: 9 },
+                    { type: 'v', r: 8, c: 7 }, { type: 'v', r: 8, c: 9 },
+                ].sort(() => Math.random() - 0.5);
+
+            const entryWall = borders[0];
+
+            if (entryWall.type === 'h') hWalls[entryWall.r][entryWall.c] = false;
+            else vWalls[entryWall.r][entryWall.c] = false;
+
+
+
+            draw();
+        }
+
+        function analyzePathStats(path) {
+            const tm =
+            {
+                N: { E: 'right', W: 'left', N: 'straight', S: 'straight' },
+                E: { S: 'right', N: 'left', E: 'straight', W: 'straight' },
+                W: { N: 'right', S: 'left', W: 'straight', E: 'straight' },
+                S: { W: 'right', E: 'left', S: 'straight', N: 'straight' },
+            };
+
+            function dir(a, b) {
+                const dr = b[0] - a[0], dc = b[1] - a[1];
+                return dr < 0 ? 'N' : dr > 0 ? 'S' : dc > 0 ? 'E' : 'W';
+            }
+            let right = 0, left = 0, straight = 0;
+            for (let i = 1; i < path.length - 1; i++) {
+                const t = tm[dir(path[i - 1], path[i])]?.[dir(path[i], path[i + 1])] || 'straight';
+                if (t === 'right') right++;
+                else if (t === 'left') left++;
+                else straight++;
+            }
+            return { right, left, stright };
+        }
+
+        cv.addEventListener('click', e => {
+            const rect = cv.getBoundingClientRect();
+            const mx = (e.clientX - rect.left) * (cv.width / rect.width);
+            const my = (e.clientY - rect.top) * (cv.height / rect.height);
+            const T = 7;
+
+            for (let r = 1; r < N; r++)
+                for (let c = 0; c < N; c++) {
+                    const wx = W + c * CELL, wy = r * CELL;
+                    if (mx >= wx - T && mx <= wx + (CELL - W) + T && my >= wy - T && my <= wy + W + T) {
+                        hWalls[r][c] = !hWalls[r][c]; draw(); return;
+                    }
+                }
+
+            for (let r = 0; r < N; r++)
+                for (let c = 1; c < N; c++) {
+                    const wx = c * CELL, wy = W + r * CELL;
+                    if (mx >= wx - T && mx <= wx + W + T && my >= wy - T && my <= wy + (CELL - W) + T) {
+                        vWalls[r][c] = !vWalls[r][c]; draw(); return;
+                    }
+                }
+        });
+        draw();
+    </script>
+</body>
+
 </html>
