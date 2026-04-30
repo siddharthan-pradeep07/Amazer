@@ -31,19 +31,19 @@
         {
             display: flex;
             flex-direction: column;
-            gap: 13px;
+            gap: 0.8vw;
             border: 2px solid #a79a7e;
-            border-radius: 16px;
-            padding: 15px;
+            border-radius: 1vw;
+            padding: 0.8vw;
         }
 
         button {
-            width: 260px;
-            height: 70px;
+            width: 100%;
+            height: 4.5vw;
             margin-right: 0;
-            border-radius: 16px;
+            border-radius: 1vw;
             color: rgb(255, 232, 198);
-            font-size: 28px;
+            font-size: 1.8vw;
             font-family: Instrument Serif;
             border: 1px solid #3f3f3f;
             background: #272727;
@@ -63,7 +63,8 @@
         .side {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 0.8vw;
+            width: 18vw;
         }
     </style>
 </head>
@@ -182,7 +183,7 @@
                   hWalls[r][c] = true;
 
             for(let r = 0; r < N; r++)
-               for(let c =1; c < N; c++)
+               for(let c = 1; c < N; c++)
                   vWalls[r][c] = true; 
             
             draw();      
