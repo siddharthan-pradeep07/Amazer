@@ -85,8 +85,9 @@
             border: 1px solid #a79a7e;
             border-radius: 1vw;
             padding: 0.8vw;
-            width: 12vw;
-            max-height: 80vh;
+            width: 27vw;
+            height: 88vh;
+            /* max-height: 80vh; */
             overflow-y: auto;
             align-self: flex-start;
         }
@@ -204,7 +205,7 @@
         {
             if (pathCells.length < 2)
             {
-                document.getElementById('dirContent').innerHTML = 'Find the shortest path first!';
+                document.getElementById('dirContent').innerHTML = 'First click "find path (shortest)" ';
                 return;
             }
             const tm =
