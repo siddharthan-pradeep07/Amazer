@@ -90,6 +90,7 @@
 
         <div class="btn-group">
             <button onclick="generate()">Generate maze</button>
+            <button onclick="generate()"><b><i>Generate micromouse code for solving.</i></b></button>
         </div>    
 
         <div class="btn-group">
@@ -110,8 +111,8 @@
                 <div>Straights:<span id="sStraight"> —</span></div>
             </div>
 
-        <div class="info-box">
-            <b><i>Project by siddharthan.</i></b>
+        <div class="info-box">  
+            <p><b><i>Click the walls to edit the maze.</i></b></p>
         </div>
 
         </div>
@@ -244,7 +245,7 @@
             if (pathCells.length > 1) {
                 ctx.save();
                 ctx.strokeStyle = '#eca221';
-                ctx.lineWidth = 2;
+                ctx.lineWidth = 1.4;
                 ctx.lineJoin = ctx.lineCap = 'round';
                 ctx.beginPath();
                 for (let i = 0; i < pathCells.length; i++) {
