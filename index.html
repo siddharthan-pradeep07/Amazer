@@ -77,6 +77,19 @@
             /* display: flex; */
             /* justify-content: space-between; */
         }
+        .dir-box
+        {
+            color: #ffffff;
+            font-family: Instrument Serif;
+            font-size: 1.2vw;
+            border: 1px solid #a79a7e;
+            border-radius: 1vw;
+            padding: 0.8vw;
+            width: 12vw;
+            max-height: 80vh;
+            overflow-y: auto;
+            align-self: flex-start;
+        }
 
     </style>
 </head>
@@ -116,6 +129,12 @@
         </div>
 
         </div>
+
+       <div class="dir-box" id="dirbox">
+         <b>Directions [Start to finish]</b>
+         <div id="dirContent" style="margin-top: 0.5vw; line-height: 2;">-</div>
+       </div>
+
     </div>
 
     <script>
@@ -185,7 +204,7 @@
         {
             if (pathCells.length < 2)
             {
-                alert('Click "find the shortest path"');
+                document.getElementById('dirContent').innerHTML = 'Find the shortest path first!';
                 return;
             }
             const tm =
@@ -212,8 +231,8 @@
                 else steps.push({step: i, move: 'Straight'});
             }
 
-            const guide = steps.map((s, i) => `${i+1}. ${s.move}`).join('\n'); //Reference from coding forum.
-            alert('Direction Guide (Start → Finish):\n\n' + guide);
+            const guide = steps.map((s, i) => `${i+1}. ${s.move}`).join('<br>');
+            document.getElementById('dirContent').innerHTML = guide;
         }
 
         function resetStats() 
