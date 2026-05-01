@@ -8,7 +8,7 @@ It is a robotic mouse that solves a maze. (Reference: Take a look at the video b
 
 ## Website Usage instructions:
 
-  1. generate a maze, by clicking the generate maze button. 
+  1. Generate a maze, by clicking the generate maze button. 
   2. If you have a custom maze, You can click the "clear walls" button and start making a maze from scratch by clicking the wall/way. 
   3. After you have a proper maze, you can click the "find path(shortest)" button to find the shortest path denoted using (yellow)
   4. Then the program draws the shortest possible line from the start(green) to finish(4x red)

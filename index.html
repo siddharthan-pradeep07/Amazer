@@ -9,7 +9,7 @@
             margin: 0;
             padding: 2rem;
             font-family: sans-serif;
-            background: #2b2b2b;
+            background: #a19b9b;
         }
 
         .box {
@@ -24,7 +24,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #eca221;
+            color: #cf3c3c;
         }
 
         .btn-group
@@ -32,7 +32,7 @@
             display: flex;
             flex-direction: column;
             gap: 0.8vw;
-            border: 2px solid #a79a7e;
+            border: 2px solid #686981;
             border-radius: 1vw;
             padding: 0.8vw;
         }
@@ -42,10 +42,10 @@
             height: 3.0vw; /* adjust */
             margin-right: 0;
             border-radius: 1vw;
-            color: rgb(255, 232, 198);
+            color: rgb(255, 255, 255);
             font-size: 1.3vw;
             font-family: Instrument Serif; 
-            border: 1px solid #3f3f3f;
+            border: 1px solid #686981;
             background: #272727;
         }
 
@@ -71,7 +71,7 @@
             color: #ffffff;
             font-family: Instrument Serif;
             font-size: 1.2vw;
-            border: 1px solid #ffa8a2de;
+            border: 3px solid #686981;
             border-radius: 1vw;
             padding: 0.8vw;
             /* display: flex; */
@@ -82,7 +82,7 @@
             color: #ffffff;
             font-family: Instrument Serif;
             font-size: 1.2vw;
-            border: 1px solid #a79a7e;
+            border: 3px solid #686981;
             border-radius: 1vw;
             padding: 0.8vw;
             width: 27vw;
@@ -97,9 +97,9 @@
         .dir-toggle
         {
             display:flex;
-            background: #303030;
+            background: #30303059;
             border-radius: 20px;
-            border: 1px solid #d1c2a1;
+            border: 1px solid #686981;
             padding: 3px;
             gap: 3px;
             margin-top: 0.5vw;
@@ -111,27 +111,28 @@
             height: 2vw;
             font-size: 1vw;
             border-radius: 20px;
-            border: 1px solid #d1c2a1;
-            background: transparent;
+            border: 1px solid #686981;
+            background:#292626;
             color: #aaaaaafb;
             cursor: pointer;
         }
-        .toggle-btn.active
+        /* .toggle-btn.active
         {
             background: #353433;
-            color: #ffe4b2;
-        }
+            color: #ffffff;
+        } */
 
         .dir-inner
         {
             margin: 0.5vw 0.2vw 0.2vw 0.2vw;
-            border: 1px solid #a79a7e;
+            border: 1px solid #3f3f3f;
             border-radius: 0.8vw;
             padding: 0.8vw;
             flex: 1;
             overflow-y: auto;
             line-height: 2;
             min-height: 10vw;
+            background: #272727;
         }
 
         .copy-btn
@@ -141,15 +142,15 @@
             font-size: 1vw;
             font-family: Instrument Serif;
             border-radius: 967px;
-            border: 1px solid #a79a7e;
+            border: 1px solid #3f3f3f;
             background:#272727;
-            color: #ffe4b2;
+            color: #ffffff;
             cursor: pointer;
             margin-right:0;
         }
         .copy-btn:hover
         {
-            background: #443f36;
+            background: #292626;
         }
 
     </style>
@@ -172,9 +173,13 @@
             <button onclick="pathCells=[]; resetStats(); draw();">Clear path</button>
         </div>
 
-        <div class="btn-group">   
-            <button onclick="clearAllWalls()">Clear all walls</button>
-            <button onclick="addAllWalls()">Add all walls</button>
+        <div class="btn-group">  
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.8vw;">
+               <button style="width:100%; min-width:0;" onclick="clearAllWalls()">Clear all walls</button>
+               <button style="width:100%; min-width:0;" onclick="addAllWalls()">Add all walls</button>
+               <button style="width:100%; min-width:0;" >16 x 16</button>
+               <button style="width:100%; min-width:0;" onclick="window.open('https://https://github.com/siddharthan-pradeep07/Amazer/blob/main/README.md', '_blank')">Read docx.</button>
+            </div>
         </div>
 
             <div class="info-box">
