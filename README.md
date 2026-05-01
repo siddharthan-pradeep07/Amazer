@@ -1,11 +1,13 @@
-# Hello!
 # Welcome to the instruction guide for using Amazer. #
 
-## About: Amazer is a web platfrom, for analizing the mazes for micro-mouse competion. ##
+### About:
+     Amazer is a web platfrom, for analizing the mazes for micro-mouse competion.
 
-### Micro-mouse: It is a robotic mouse that solves a maze. (Reference: Take a look at the video by veritasium in youtube) [View video](https://youtu.be/ZMQbHMgK2rw?si=y8FAdEtewEqJMsnd) ###
+### Micro-mouse: 
+     It is a robotic mouse that solves a maze. (Reference: Take a look at the video by veritasium in     youtube) [View video](https://youtu.be/ZMQbHMgK2rw?si=y8FAdEtewEqJMsnd) 
 
-## Website Usage instructions: ##
+## Website Usage instructions:
+ 
   1. generate a maze, by clicking the generate maze button. 
   2. If you have a custom maze, You can click the "clear walls" button and start making a maze from scratch by clicking the wall/way. 
   3. After you have a proper maze, you can click the "find path(shortest)" button to find the shortest path denoted using (yellow)
@@ -33,7 +35,7 @@
        3. no. of left turns
        4. no. of strights ```
 
-## Sample micromouse code: ##
+## Sample micromouse code: 
 
 ```//                                             CODE BY SIDDHARTHAN
 const int trigLeft  = 4,  echoLeft  = 2;
