@@ -24,7 +24,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #cf3c3c;
+            color: #5b84cfb2;
         }
 
         .btn-group
@@ -64,7 +64,7 @@
             display: flex;
             flex-direction: column;
             gap: 0.8vw;
-            width: 18vw;
+            width: 18vw; 
         }
         .info-box
         {
@@ -177,7 +177,7 @@
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.8vw;">
                <button style="width:100%; min-width:0;" onclick="clearAllWalls()">Clear all walls</button>
                <button style="width:100%; min-width:0;" onclick="addAllWalls()">Add all walls</button>
-               <button style="width:100%; min-width:0;" >16 x 16</button>
+               <button style="width:100%; min-width:0;" onclick="toggleDeadEnds()">Dead Ends</button>
                <button style="width:100%; min-width:0;" onclick="window.open('https://github.com/siddharthan-pradeep07/Amazer/blob/main/README.md', '_blank')">Read docx.</button>
             </div>
         </div>
@@ -453,6 +453,21 @@
                 ctx.stroke();
                 ctx.restore();
             }
+
+            if (showDeadEnds)
+            {
+                for(let r = 0; r < N; r++)
+                {
+                    for(let c = 0; c < N; c++)
+                    {
+                        if(isDeadEnd(r, c))
+                        {
+                            ctx.fillStyle = '#5b84cfb2';
+                            ctx.fillRect(W + c*CELL, W + r*CELL, CELL-W, CELL-W);
+                        }
+                    }
+                }
+            }
         }
 
         function clearAllWalls() {
@@ -544,6 +559,28 @@
                 else straight++;
             }
             return { right, left, straight };
+        }
+
+        let showDeadEnds = false;
+
+        function toggleDeadEnds()
+        {
+            showDeadEnds = !showDeadEnds;
+            draw();
+        }
+
+        function isDeadEnd(r, c)
+        {
+            if (r === 0 && c === 0) return false;
+            const fc = Math.floor(N/2) - 1;
+            const fr = Math.floor(N/2) - 1;
+            if ((r === fr || r === fr+1) && (c ===fc || c === fc+1)) return false;
+            let openCount = 0;
+            if (!hWalls[r][c]) openCount++;
+            if (!hWalls[r+1][c]) openCount++;
+            if (!vWalls[r][c]) openCount++;
+            if (!vWalls[r][c+1]) openCount++;
+            return openCount=== 1;
         }
 
         cv.addEventListener('click', e => {

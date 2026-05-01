@@ -27,7 +27,8 @@ Code file: The code file is written in C++, Custom genearted based on the path. 
   6. Toggle between Code / Raw. to view files.
   7. Click the "copy" button to copy the Code / Raw file. 
   8. Add it in your micromouse code to make it follow the exact path to finish.
-  9. View the Data:
+  9. Click the "Dead ends" button to mark the dead ends (blue) click again to remove.
+  10. View the Data:
        
     ```1. total number of cells covered by the path.
        2. no. of right turns
@@ -35,6 +36,7 @@ Code file: The code file is written in C++, Custom genearted based on the path. 
        4. no. of strights ```
 
 ## Sample micromouse code: 
+This code is not part of this project, I wrote this code for my micro-mouse. The website generates the directions code in this format. (coding time for this was not tracked)
 
 ```//                                             CODE BY SIDDHARTHAN
 const int trigLeft  = 4,  echoLeft  = 2;
