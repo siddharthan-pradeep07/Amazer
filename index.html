@@ -17,10 +17,10 @@
 
         .box 
         {
-            width: 44vw;
-            height: 44vw;
+            width: 36vw;
+            height: 36vw;
             aspect-ratio: 1;
-            margin-left: 2rem;
+            /* margin-left: 2rem; */
             border-radius: 16px;
             border: 1px solid #3f3f3f;
             background: #272727;
@@ -167,13 +167,39 @@
             background: #292626;
         }
 
+        .box
+        {
+          width: 36vw;
+          height: 36vw;
+        }
+
+        .bottom-box
+        {
+            width: 36vw;
+            height: 7vw;
+            border-radius: 1vw;
+            border: 1px solid #686981;
+            background: #272727;
+            color: #ffffff;
+            font-family: Instrument Serif;
+            font-size: 1.1vw;
+            padding: 0.8vw;
+            box-sizing: border-box;
+            margin-left: 0;
+        }
+
     </style>
 </head>
 
 <body>
     <div class="layout">
+       <div style="display: flex; flex-direction: column; gap: 1vw;">
         <div class="box">
             <canvas id="cv"></canvas>
+        </div>
+        <div class="bottom-box">
+            test box
+        </div>
         </div>
         <div class="side">
 
@@ -239,8 +265,9 @@
         {
             const box = cv.parentElement;
             const style = getComputedStyle(box);
-            const padding = parseFloat(style.paddingLeft) + parseFloat(style.paddingRight);
-            const size = box.clientWidth - padding;
+            const padX = parseFloat(style.paddingLeft) + parseFloat(style.paddingRight);
+            const padY = parseFloat(style.paddingTop) + parseFloat(style.paddingBottom);
+            const size = Math.min(box.clientWidth - padX, box.clientHeight - padY);
             cv.style.width = size + 'px';
             cv.style.height = size + 'px';
         }
