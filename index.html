@@ -87,16 +87,19 @@
             padding: 0.8vw;
             width: 27vw;
             height: 88vh;
+            display: flex;
+            flex-direction: column;
+            box-sizing: border-box;
             /* max-height: 80vh; */
-            overflow-y: auto;
             align-self: flex-start;
         }
 
         .dir-toggle
         {
             display:flex;
-            background: #e4d8b2;
+            background: #303030;
             border-radius: 20px;
+            border: 1px solid #d1c2a1;
             padding: 3px;
             gap: 3px;
             margin-top: 0.5vw;
@@ -108,15 +111,27 @@
             height: 2vw;
             font-size: 1vw;
             border-radius: 20px;
-            border: none;
+            border: 1px solid #d1c2a1;
             background: transparent;
             color: #aaaaaafb;
             cursor: pointer;
         }
         .toggle-btn.active
         {
-            background: #554e41;
+            background: #353433;
             color: #ffe4b2;
+        }
+
+        .dir-inner
+        {
+            margin: 0.5vw 0.2vw 0.2vw 0.2vw;
+            border: 1px solid #a79a7e;
+            border-radius: 0.8vw;
+            padding: 0.8vw;
+            flex: 1;
+            overflow-y: auto;
+            line-height: 2;
+            min-height: 10vw;
         }
 
     </style>
@@ -160,11 +175,13 @@
 
        <div class="dir-box" id="dirbox">
          <b>Directions [Start to finish]</b>
-         <div id="dirContent" style="margin-top: 0.5vw; line-height: 2;">Click find path, and then click generate raw code.</div>
          <div class="dir-toggle">
             <button class="toggle-btn active" id="btnRaw" onclick= "switchMode('raw')">Raw</button>
             <button class="toggle-btn" id="btnCode" onclick= "switchMode('code')">Code</button>
          </div>
+         <div class="dir-inner" id="dirContent">
+            Click find path, and then click generate raw code.
+        </div>
        </div>
 
     </div>
@@ -272,7 +289,8 @@
             {
                 dirMode = mode;
                 document.getElementById('btnRaw').classList.toggle('active', mode === 'raw');
-                document.getElementById('btnCode').classList.toggle(mode === 'raw');
+                document.getElementById('btnCode').classList.toggle('active', mode === 'raw');
+                showDirections(dirMode);
             }
 
             function showDirections(mode)
@@ -295,12 +313,14 @@
                     const dr = b[0]-a[0], dc = b[1]-a[1];
                     return dr<0?'N':dr>0?'S':dc>0?'E':'W';
                 }
-                const steps = [];
+                const steps = ['straight'];
                    for (let i = 1; i < pathCells.length - 1; i++) {
                    const d1 = dir(pathCells[i-1], pathCells[i]);
                    const d2 = dir(pathCells[i], pathCells[i+1]);
                    steps.push(tm[d1]?.[d2] || 'straight');
                 }
+                steps.push('straight');
+
 
                 if(mode=== 'raw')
                 {
