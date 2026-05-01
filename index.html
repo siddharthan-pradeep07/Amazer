@@ -384,7 +384,7 @@
             let r = 0, c = 0;
             let facing = 'E'; 
             const visited = new Set();
-            visited.add(`${r}, ${c}`);
+            visited.add(`${r},${c}`);
             leftFollowPath.push([r,c]);
 
             const dirs = {E: [0,1], S:[1,0], W:[0,-1], N:[-1,0]};
@@ -393,7 +393,7 @@
 
             for (let i = 0; i < 500; i++)
             {
-                const letFace = turnLeft[facing];
+                const leftFace = turnLeft[facing];
                 const [dr, dc] = dirs[leftFace];
                 const nr = r + dr, nc = c + dc;
                 
