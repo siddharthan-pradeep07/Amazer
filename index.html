@@ -5,14 +5,16 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
     <style>
-        body {
+        body 
+        {
             margin: 0;
             padding: 2rem;
             font-family: sans-serif;
             background: #a19b9b;
         }
 
-        .box {
+        .box 
+        {
             width: 45vw;
             aspect-ratio: 1;
             margin-left: 2rem;
@@ -24,7 +26,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #5b84cfb2;
+            color: #232633;
         }
 
         .btn-group
@@ -37,7 +39,8 @@
             padding: 0.8vw;
         }
 
-        button {
+        button 
+        {
             width: 100%;
             height: 3.0vw; /* adjust */
             margin-right: 0;
@@ -49,18 +52,21 @@
             background: #272727;
         }
 
-        button:hover {
+        button:hover 
+        {
             cursor: pointer;
             background: #2b2929;
         }
 
-        .layout {
+        .layout 
+        {
             display: flex;
             align-items: flex-start;
             gap: 24px;
         }
 
-        .side {
+        .side 
+        {
             display: flex;
             flex-direction: column;
             gap: 0.8vw;
@@ -70,12 +76,12 @@
         {
             color: #ffffff;
             font-family: Instrument Serif;
-            font-size: 1.1vw;
+            font-size: 1.2vw;
             border: 3px solid #686981;
             border-radius: 1vw;
             padding: 0.8vw;
             /* display: flex; */
-            /* justify-content: space-between; */  
+            /* justify-content: space-between; */
         }
         .dir-box
         {
@@ -221,7 +227,8 @@
         cv.width = SZ; cv.height = SZ;
         const ctx = cv.getContext('2d');
 
-        function resize() {
+        function resize() 
+        {
             const box = cv.parentElement;
             const style = getComputedStyle(box);
             const padding = parseFloat(style.paddingLeft) + parseFloat(style.paddingRight);
@@ -401,8 +408,9 @@
             draw();      
         }
 
-        function draw() {
-            ctx.fillStyle = '#1a1f35'; // cell side clr
+        function draw() 
+        {
+            ctx.fillStyle = '#232633'; // cell side clr
             ctx.fillRect(0, 0, SZ, SZ);
 
             for (let r = 0; r < N; r++)
@@ -441,7 +449,8 @@
             ctx.textBaseline = 'middle';
             ctx.fillText('F', W + 7 * CELL + (CELL - W + W), W + 7 * CELL + (CELL - W + W));
 
-            if (pathCells.length > 1) {
+            if (pathCells.length > 1) 
+            {
                 ctx.save();
                 ctx.strokeStyle = '#eca221';
                 ctx.lineWidth = 1.4;
@@ -478,7 +487,8 @@
             document.getElementById('sDeadEnds').textContent = deadEndCount;       
         }
 
-        function clearAllWalls() {
+        function clearAllWalls() 
+        {
             for (let r = 0; r <= N; r++)
                 for (let c = 0; c < N; c++)
                     if (r !== 0 && r !== N) hWalls[r][c] = false;
@@ -490,7 +500,8 @@
             draw();
         }
 
-        function lockFinishWalls() {
+        function lockFinishWalls() 
+        {
             hWalls[7][7] = true; hWalls[7][8] = true;
             hWalls[9][7] = true; hWalls[9][8] = true;
             vWalls[7][7] = true; vWalls[7][9] = true;
@@ -499,7 +510,8 @@
             vWalls[7][8] = false; vWalls[8][8] = false;
         }
 
-        function generate() {
+        function generate() 
+        {
             pathCells = [];
             for (let r = 0; r <= N; r++) for (let c = 0; c < N; c++) hWalls[r][c] = true;
             for (let r = 0; r < N; r++) for (let c = 0; c < + N; c++) vWalls[r][c] = true;
@@ -515,7 +527,8 @@
                 let moved = false;
                 for (const [dr, dc] of sh) {
                     const nr = r + dr, nc = col + dc;
-                    if (nr >= 0 && nr < N && nc >= 0 && nc < N && !visited[nr][nc]) {
+                    if (nr >= 0 && nr < N && nc >= 0 && nc < N && !visited[nr][nc]) 
+                    {
                         visited[nr][nc] = true;
                         if (dr === 0) vWalls[r][dc > 0 ? col + 1 : col] = false;
                         else hWalls[dr > 0 ? r + 1 : r][col] = false;
@@ -546,7 +559,8 @@
             draw();
         }
 
-        function analyzePathStats(path) {
+        function analyzePathStats(path) 
+        {
             const tm =
             {
                 N: { E: 'right', W: 'left', N: 'straight', S: 'straight' },
@@ -555,7 +569,8 @@
                 S: { W: 'right', E: 'left', S: 'straight', N: 'straight' },
             };
 
-            function dir(a, b) {
+            function dir(a, b) 
+            {
                 const dr = b[0] - a[0], dc = b[1] - a[1];
                 return dr < 0 ? 'N' : dr > 0 ? 'S' : dc > 0 ? 'E' : 'W';
             }
@@ -591,24 +606,29 @@
             return openCount=== 1;
         }
 
-        cv.addEventListener('click', e => {
+        cv.addEventListener('click', e => 
+        {
             const rect = cv.getBoundingClientRect();
             const mx = (e.clientX - rect.left) * (cv.width / rect.width);
             const my = (e.clientY - rect.top) * (cv.height / rect.height);
             const T = 7;
 
             for (let r = 1; r < N; r++)
-                for (let c = 0; c < N; c++) {
+                for (let c = 0; c < N; c++) 
+                {
                     const wx = W + c * CELL, wy = r * CELL;
-                    if (mx >= wx - T && mx <= wx + (CELL - W) + T && my >= wy - T && my <= wy + W + T) {
+                    if (mx >= wx - T && mx <= wx + (CELL - W) + T && my >= wy - T && my <= wy + W + T) 
+                    {
                         hWalls[r][c] = !hWalls[r][c]; draw(); return;
                     }
                 }
 
             for (let r = 0; r < N; r++)
-                for (let c = 1; c < N; c++) {
+                for (let c = 1; c < N; c++) 
+                {
                     const wx = c * CELL, wy = W + r * CELL;
-                    if (mx >= wx - T && mx <= wx + W + T && my >= wy - T && my <= wy + (CELL - W) + T) {
+                    if (mx >= wx - T && mx <= wx + W + T && my >= wy - T && my <= wy + (CELL - W) + T) 
+                    {
                         vWalls[r][c] = !vWalls[r][c]; draw(); return;
                     }
                 }
