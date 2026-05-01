@@ -11,11 +11,14 @@
             padding: 2rem;
             font-family: sans-serif;
             background: #a19b9b;
+            height: 100vh;
+            overflow: hidden;
         }
 
         .box 
         {
-            width: 45vw;
+            width: 50vh;
+            height: 50vh;
             aspect-ratio: 1;
             margin-left: 2rem;
             border-radius: 16px;
@@ -61,6 +64,7 @@
         .layout 
         {
             display: flex;
+            flex-direction: row;
             align-items: flex-start;
             gap: 24px;
         }
@@ -69,6 +73,7 @@
         {
             display: flex;
             flex-direction: column;
+            flex-shrink: 0;
             gap: 0.8vw;
             width: 18vw; 
         }
@@ -91,9 +96,11 @@
             border: 3px solid #686981;
             border-radius: 1vw;
             padding: 0.8vw;
-            width: 27vw;
-            height: 88vh;
+            width: auto;
+            height: auto;
             display: flex;
+            flex: 1;
+            min-width: 0;
             flex-direction: column;
             box-sizing: border-box;
             /* max-height: 80vh; */
@@ -257,7 +264,8 @@
                 if (finish.has(r * N + c)) {
                     const path = [];
                     let cur = [r, c];
-                    while (cur) {
+                    while (cur) 
+                    {
                         path.unshift(cur); cur = prev[cur[0]][cur[1]];
                     }
                     pathCells = path;
@@ -270,7 +278,8 @@
                     draw();
                     return;
                 }
-                for (const [nr, nc, open] of [
+                for (const [nr, nc, open] of 
+                [
                     [r - 1, c, !hWalls[r][c]],
                     [r + 1, c, !hWalls[r + 1][c]],
                     [r, c - 1, !vWalls[r][c]],
@@ -349,7 +358,8 @@
                     return dr<0?'N':dr>0?'S':dc>0?'E':'W';
                 }
                 const steps = ['straight'];
-                   for (let i = 1; i < pathCells.length - 1; i++) {
+                   for (let i = 1; i < pathCells.length - 1; i++) 
+                {
                    const d1 = dir(pathCells[i-1], pathCells[i]);
                    const d2 = dir(pathCells[i], pathCells[i+1]);
                    steps.push(tm[d1]?.[d2] || 'straight');
