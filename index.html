@@ -134,6 +134,24 @@
             min-height: 10vw;
         }
 
+        .copy-btn
+        {
+            height: 1.8vw;
+            width: 7vw;
+            font-size: 1vw;
+            font-family: Instrument Serif;
+            border-radius: 967px;
+            border: 1px solid #a79a7e;
+            background:#272727;
+            color: #ffe4b2;
+            cursor: pointer;
+            margin-right:0;
+        }
+        .copy-btn:hover
+        {
+            background: #443f36;
+        }
+
     </style>
 </head>
 
@@ -174,7 +192,10 @@
         </div>
 
        <div class="dir-box" id="dirbox">
-         <b>Directions [Start to finish]</b>
+         <div style="display:flex; justify-content:space-between; align-items:center;">
+             <b>Directions [Start to finish]</b>
+             <button class="copy-btn" onclick="copyDirections()">Copy</button>
+         </div>
          <div class="dir-toggle">
             <button class="toggle-btn active" id="btnRaw" onclick= "switchMode('raw')">Raw</button>
             <button class="toggle-btn" id="btnCode" onclick= "switchMode('code')">Code</button>
@@ -339,6 +360,18 @@
 
 
         //}
+
+        function copyDirections()
+        {
+            const el = document.getElementById('dirContent');
+            const text = el.innerText;
+            navigator.clipboard.writeText(text).then(() =>
+            {
+                const btn = document.querySelector('.copy-btn');
+                btn.textContent = 'code copied';
+                setTimeout(() => btn.textContent = 'Copy', 1500);
+            });
+        }
 
         function resetStats() 
         {
