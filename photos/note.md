@@ -1,0 +1,1 @@
+All the images in this folder are screenshots of the website itself. 
