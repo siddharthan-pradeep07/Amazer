@@ -21,7 +21,7 @@
         ........`
 
     Code file: The code file is written in C++, Custom genearted based on the path.
-               Code(piece) works for micromouses made using esps,and arduinos.
+               Code(piece) works for micromouses made using esps, and arduinos.
     
   6. Toggle between Code / Raw. to view files.
   7. Click the "copy" button to copy the Code / Raw file. 
@@ -34,7 +34,7 @@
 
 ##Smaple micromouse code:
 
-`//                                             CODE BY SIDDHARTHAN
+```//                                             CODE BY SIDDHARTHAN
 const int trigLeft  = 4,  echoLeft  = 2;
 const int trigFront = 5,  echoFront = 18;
 const int trigRight = 19, echoRight = 21;
@@ -294,4 +294,4 @@ void loop() {
   }
 
   delay(50);
-}`
+}```
