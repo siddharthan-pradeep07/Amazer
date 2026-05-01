@@ -29,7 +29,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #232633;
+            color: #ff6b9d';
         }
 
         .btn-group
@@ -198,7 +198,7 @@
             <canvas id="cv"></canvas>
         </div>
         <div class="bottom-box">
-            test box
+            <button onclick="simulateLeftwallFollowingAlgorithm()" style="width: 100%; height: 100%; font-size: 1vw; border: none;">Simulate left wall following</button>
         </div>
         </div>
         <div class="side">
@@ -321,40 +321,6 @@
             draw();
         }
 
-        //function showDirections()
-        //{
-            // if (pathCells.length < 2)
-            // {
-            //     document.getElementById('dirContent').innerHTML = 'First click "find path (shortest)" ';
-            //     return;
-            // }
-            // const tm =
-            // {
-            //     N: { E: 'right', W: 'left', N: 'straight', S: 'straight' },
-            //     E: { S: 'right', N: 'left', E: 'straight', W: 'straight' },
-            //     W: { N: 'right', S: 'left', W: 'straight', E: 'straight' },
-            //     S: { W: 'right', E: 'left', S: 'straight', N: 'straight' },
-            // };
-
-            // function dir(a,b)
-            // {
-            //     const dr = b[0]-a[0], dc = b[1]-a[1];
-            //     return dr<0?'N' : dr>0?'S' : dc>0?'E':'W';
-            // }
-
-            // const steps = [];
-            // for (let i = 1; i < pathCells.length - 1; i++)
-            // {
-            //     const d1 = dir(pathCells[i-1], pathCells[i]);
-            //     const d2 = dir(pathCells[i], pathCells[i+ 1]);
-            //     const t = tm[d1]?.[d2];
-            //     if(t && t !== 'Straight') steps.push({step: i, move: t});
-            //     else steps.push({step: i, move: 'Straight'});
-            // }
-
-            // const guide = steps.map((s, i) => `${i+1}. ${s.move}`).join('<br>');
-            // document.getElementById('dirContent').innerHTML = guide;
-
             let dirMode = 'raw';
 
             function switchMode(mode)
@@ -410,8 +376,65 @@
                 }
             }
 
+        let leftFollowPath = [];
 
-        //}
+        function simulateLeftwallFollowingAlgorithm()
+        {
+            leftFollowPath = [];
+            let r = 0, c = 0;
+            let facing = 'E'; 
+            const visited = new Set();
+            visited.add(`${r}, ${c}`);
+            leftFollowPath.push([r,c]);
+
+            const dirs = {E: [0,1], S:[1,0], W:[0,-1], N:[-1,0]};
+            const turnLeft = {E:'N', N:'W', W:'S', S:'E'};     // used claude
+            const turnRight = {E:'S', S:'W', W:'N', N:'E'};    // ^^^^^
+
+            for (let i = 0; i < 500; i++)
+            {
+                const letFace = turnLeft[facing];
+                const [dr, dc] = dirs[leftFace];
+                const nr = r + dr, nc = c + dc;
+                
+                if (nr >= 0 && nr < N && nc >= 0 && nc < N && canMove(r, c, nr, nc))
+                {
+                    r = nr;
+                    c = nc;
+                    facing = leftFace;
+                }
+                else
+                {
+                    const [dr2, dc2] = dirs[facing];
+                    const nr2 = r + dr2, nc2 = c + dc2;
+                    if(nr2 >= 0 && nr2 < N && nc2 >= 0 && nc2 < N && canMove(r,c,nr2, nc2))
+                    {
+                        r = nr2;
+                        c = nc2;
+                    }
+                    else
+                    {
+                       facing = turnRight[facing];
+                    }
+                }
+                if (!visited.has(`${r},${c}`))
+                {
+                    visited.add(`${r},${c}`);
+                    leftFollowPath.push([r,c]);
+                }
+                if(r >= 7 && r <= 8 && c >= 7 && c<= 8) break;
+            }
+            draw();
+        }
+
+        function canMove(r1,c1,r2,c2)
+        {
+            if (r2 < r1) return !hWalls[r1][c1];
+            if (r2 > r1) return !hWalls[r1+1][c1];
+            if (c2 < c1) return !vWalls[r1][c1];
+            if (c2 > c1) return !vWalls[r1][c1+1];
+        }
+        
 
         function copyDirections()
         {
@@ -498,6 +521,24 @@
                     const x = W + pathCells[i][1] * CELL + (CELL - W) / 2;
                     const y = W + pathCells[i][0] * CELL + (CELL - W) / 2;
                     i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+                }
+                ctx.stroke();
+                ctx.restore();
+            }
+
+            if(leftFollowPath.length > 1)
+            {
+                ctx.save();
+                ctx.strokeStyle = '#ff6b9d';
+                ctx.lineWidth = 1.2;
+                ctx.lineJoin = ctx.lineCap = 'round';
+                ctx.setLineDash([3,3]);
+                ctx.beginPath();
+                for (let i = 0; i < leftFollowPath.length; i++)
+                {
+                    const x = W + leftFollowPath[i][1]*CELL + (CELL-W)/2;
+                    const y = W + leftFollowPath[i][0]*CELL + (CELL-W)/2;
+                    i ===0? ctx.moveTo(x,y) : ctx.lineTo(x,y);
                 }
                 ctx.stroke();
                 ctx.restore();
