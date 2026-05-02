@@ -45,7 +45,7 @@
         button 
         {
             width: 100%;
-            height: 2.8vw; /* adjust */
+            height: 2.7vw; /* adjusted================================= */
             margin-right: 0;
             border-radius: 1vw;
             color: rgb(255, 255, 255);
@@ -390,42 +390,43 @@
             const dirs = {E: [0,1], S:[1,0], W:[0,-1], N:[-1,0]};
             const turnLeft = {E:'N', N:'W', W:'S', S:'E'};     // used claude
             const turnRight = {E:'S', S:'W', W:'N', N:'E'};    // ^^^^^
+            const turnAround = {E:'W', W:'E', N:'S', S:'N'};
 
-            for (let i = 0; i < 500; i++)
+            for (let i = 0; i < 1000; i++)
             {
-                const leftFace = turnLeft[facing];
-                const [dr, dc] = dirs[leftFace];
-                const nr = r + dr, nc = c + dc;
-                
-                if (nr >= 0 && nr < N && nc >= 0 && nc < N && canMove(r, c, nr, nc))
+                const tryDirs =
+                [
+                    turnLeft[facing],
+                    facing, 
+                    turnRight[facing]
+                    turnAround[facing]
+                ];
+
+                let moved = false;
+                for (const nextFace of tryDirs)
                 {
-                    r = nr;
-                    c = nc;
-                    facing = leftFace;
-                }
-                else
-                {
-                    const [dr2, dc2] = dirs[facing];
-                    const nr2 = r + dr2, nc2 = c + dc2;
-                    if(nr2 >= 0 && nr2 < N && nc2 >= 0 && nc2 < N && canMove(r,c,nr2, nc2))
-                    {
-                        r = nr2;
-                        c = nc2;
-                    }
-                    else
-                    {
-                       facing = turnRight[facing];
-                    }
-                }
-                if (!visited.has(`${r},${c}`))
-                {
-                    visited.add(`${r},${c}`);
-                    leftFollowPath.push([r,c]);
-                }
-                //if(r >= 7 && r <= 8 && c >= 7 && c<= 8) break;
+                    const [dr, dc] = dirs[leftFace];
+                    const nr = r + dr, nc = c + dc;
+
+                   if (nr >= 0 && nr < N && nc >= 0 && nc < N && canMove(r, c, nr, nc))
+                   {
+                       r = nr;
+                       c = nc;
+                       facing = leftFace;
+
+                       if (!visited.has(`${r},${c}`))
+                       {
+                          visited.add(`${r},${c}`);
+                          leftFollowPath.push([r,c]);
+                       }
+                       moved = true;
+                       break;
+                   }
+                } 
+                if (!moved) break;   
             }
             draw();
-        }
+        }    
 
         function canMove(r1,c1,r2,c2)
         {
