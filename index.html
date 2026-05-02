@@ -398,21 +398,21 @@
                 [
                     turnLeft[facing],
                     facing, 
-                    turnRight[facing]
+                    turnRight[facing],
                     turnAround[facing]
                 ];
 
                 let moved = false;
                 for (const nextFace of tryDirs)
                 {
-                    const [dr, dc] = dirs[leftFace];
+                    const [dr, dc] = dirs[nextFace];
                     const nr = r + dr, nc = c + dc;
 
                    if (nr >= 0 && nr < N && nc >= 0 && nc < N && canMove(r, c, nr, nc))
                    {
                        r = nr;
                        c = nc;
-                       facing = leftFace;
+                       facing = nextFace;
 
                        if (!visited.has(`${r},${c}`))
                        {
@@ -434,6 +434,7 @@
             if (r2 > r1) return !hWalls[r1+1][c1];
             if (c2 < c1) return !vWalls[r1][c1];
             if (c2 > c1) return !vWalls[r1][c1+1];
+            return false;
         }
         
 
