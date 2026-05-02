@@ -178,8 +178,8 @@
             width: 36vw;
             height: 7vw;
             border-radius: 1vw;
-            border: 1px solid #686981;
-            background: #272727;
+            border: 2px solid #686981;
+            background: #27272700;
             color: #ffffff;
             font-family: Instrument Serif;
             font-size: 1.1vw;
@@ -198,7 +198,7 @@
             <canvas id="cv"></canvas>
         </div>
         <div class="bottom-box">
-            <button onclick="simulateLeftwallFollowingAlgorithm()" style="width: 100%; height: 100%; font-size: 1vw; border: none;">Simulate left wall following</button>
+            <button onclick="simulateLeftwallFollowingAlgorithm()" style="width: 100%; height: 100%; font-size: 1vw; border: none; color: #ffffff; background:#272727; ">Simulate left wall following</button>
         </div>
         </div>
         <div class="side">
@@ -388,23 +388,25 @@
             leftFollowPath.push([r,c]);
 
             const dirs = {E: [0,1], S:[1,0], W:[0,-1], N:[-1,0]};
-            const turnLeft = {E:'N', N:'W', W:'S', S:'E'};     // used claude
-            const turnRight = {E:'S', S:'W', W:'N', N:'E'};    // ^^^^^
+            const left = {E:'N', N:'W', W:'S', S:'E'};     // used claude
+            const right = {E:'S', S:'W', W:'N', N:'E'};    // ^^^^^
             const turnAround = {E:'W', W:'E', N:'S', S:'N'};
 
             for (let i = 0; i < 500; i++)
             {
                 const tryDirs = 
                 [
-                    turnLeft[facing],
+                    left[facing],
                     facing, 
-                    turnRight[facing],
-                    {E:'S',N:'S',W:'E',S:'N'}[facing]                    
+                    right[facing],
+                    turnAround[facing]                    
                 ];
                 let found = false;
                 for(const nextFace of tryDirs)
                 {
+                    if(!dirs[nextFace]) continue;
                     const [dr, dc] = dirs[nextFace];
+                    //if (Math.abs(dr) + Math.abs(dc) !==1) continue;
                     const nr = r + dr, nc = c + dc;
 
                    if (nr >= 0 && nr < N && nc >= 0 && nc < N && canMove(r, c, nr, nc))
@@ -421,6 +423,10 @@
                        found = true;
                        break;
                    }
+                }
+                if(!found)
+                {
+                    facing = left[facing];
                 }
             }
 
