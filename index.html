@@ -392,18 +392,17 @@
             const turnRight = {E:'S', S:'W', W:'N', N:'E'};    // ^^^^^
             const turnAround = {E:'W', W:'E', N:'S', S:'N'};
 
-            for (let i = 0; i < 1000; i++)
+            for (let i = 0; i < 500; i++)
             {
-                const tryDirs =
+                const tryDirs = 
                 [
                     turnLeft[facing],
                     facing, 
                     turnRight[facing],
-                    turnAround[facing]
+                    {E:'S',N:'S',W:'E',S:'N'}[facing]                    
                 ];
-
-                let moved = false;
-                for (const nextFace of tryDirs)
+                let found = false;
+                for(const nextFace of tryDirs)
                 {
                     const [dr, dc] = dirs[nextFace];
                     const nr = r + dr, nc = c + dc;
@@ -419,12 +418,45 @@
                           visited.add(`${r},${c}`);
                           leftFollowPath.push([r,c]);
                        }
-                       moved = true;
+                       found = true;
                        break;
                    }
-                } 
-                if (!moved) break;   
+                }
             }
+
+            // for (let i = 0; i < 1000; i++)
+            // {
+            //     const tryDirs =
+            //     [
+            //         turnLeft[facing],
+            //         facing, 
+            //         turnRight[facing],
+            //         turnAround[facing]
+            //     ];
+
+            //     let moved = false;
+            //     for (const nextFace of tryDirs)
+            //     {
+            //         const [dr, dc] = dirs[nextFace];
+            //         const nr = r + dr, nc = c + dc;
+
+            //        if (nr >= 0 && nr < N && nc >= 0 && nc < N && canMove(r, c, nr, nc))
+            //        {
+            //            r = nr;
+            //            c = nc;
+            //            facing = nextFace;
+
+            //            if (!visited.has(`${r},${c}`))
+            //            {
+            //               visited.add(`${r},${c}`);
+            //               leftFollowPath.push([r,c]);
+            //            }
+            //            moved = true;
+            //            break;
+            //        }
+            //     } 
+            //     if (!moved) break;   
+            // }
             draw();
         }    
 
