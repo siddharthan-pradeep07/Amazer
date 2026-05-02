@@ -388,24 +388,24 @@
             leftFollowPath.push([r,c]);
 
             const dirs = {E: [0,1], S:[1,0], W:[0,-1], N:[-1,0]};
-            const left = {E:'N', N:'W', W:'S', S:'E'};     // used claude
-            const right = {E:'S', S:'W', W:'N', N:'E'};    // ^^^^^
-            const turnAround = {E:'W', W:'E', N:'S', S:'N'};
+            //const left = {E:'N', N:'W', W:'S', S:'E'};     // used claude
+            //const right = {E:'S', S:'W', W:'N', N:'E'};    // ^^^^^
+            //const turnAround = {E:'W', W:'E', N:'S', S:'N'};
 
-            for (let i = 0; i < 500; i++)
+            for (let i = 0; i < 300; i++)
             {
-                const tryDirs = 
-                [
-                    left[facing],
-                    facing, 
-                    right[facing],
-                    turnAround[facing]                    
-                ];
-                let found = false;
-                for(const nextFace of tryDirs)
-                {
-                    if(!dirs[nextFace]) continue;
-                    const [dr, dc] = dirs[nextFace];
+                // const tryDirs = 
+                // [
+                //     left[facing],
+                //     facing, 
+                //     right[facing],
+                //     turnAround[facing]                    
+                // ];
+                // let found = false;
+                // for(const nextFace of tryDirs)
+                // {
+                //     if(!dirs[nextFace]) continue;
+                    const [dr, dc] = dirs[facing];
                     //if (Math.abs(dr) + Math.abs(dc) !==1) continue;
                     const nr = r + dr, nc = c + dc;
 
@@ -413,58 +413,42 @@
                    {
                        r = nr;
                        c = nc;
-                       facing = nextFace;
+                       //facing = nextFace;
 
                        if (!visited.has(`${r},${c}`))
                        {
                           visited.add(`${r},${c}`);
                           leftFollowPath.push([r,c]);
                        }
-                       found = true;
-                       break;
+                       
+                       //found = true;
+                       //break;
                    }
+                   else
+                    {
+                        let turnCount = 0;
+                        while (turnCount < 4)
+                        {
+                            facing = {E:'S',S:'W',W:'N',N:'E'}[facing];
+                            const [dr2, dc2] = dirs[facing];
+                            const nr2 = r + dr2, nc2 = c + dc2;
+                            if(nr2 >= 0 && nr2 < N && nc2 >= 0 && nc2 < N && canMove(r,c,nr2,nc2))
+                            {
+                                break;
+                            }
+                            turnCount++;
+                        }  
+                    }
                 }
-                if(!found)
-                {
-                    facing = left[facing];
-                }
-            }
-
-            // for (let i = 0; i < 1000; i++)
-            // {
-            //     const tryDirs =
-            //     [
-            //         turnLeft[facing],
-            //         facing, 
-            //         turnRight[facing],
-            //         turnAround[facing]
-            //     ];
-
-            //     let moved = false;
-            //     for (const nextFace of tryDirs)
-            //     {
-            //         const [dr, dc] = dirs[nextFace];
-            //         const nr = r + dr, nc = c + dc;
-
-            //        if (nr >= 0 && nr < N && nc >= 0 && nc < N && canMove(r, c, nr, nc))
-            //        {
-            //            r = nr;
-            //            c = nc;
-            //            facing = nextFace;
-
-            //            if (!visited.has(`${r},${c}`))
-            //            {
-            //               visited.add(`${r},${c}`);
-            //               leftFollowPath.push([r,c]);
-            //            }
-            //            moved = true;
-            //            break;
-            //        }
-            //     } 
-            //     if (!moved) break;   
-            // }
-            draw();
-        }    
+                // if(!found)
+                // {
+                //     //facing = left[facing];
+                //     break;
+                // }
+                draw();
+        }
+    
+        
 
         function canMove(r1,c1,r2,c2)
         {
