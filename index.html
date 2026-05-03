@@ -258,6 +258,7 @@
         <div style="display: flex; flex-direction: row; gap: 1vw;">
             <div class="bottom-box" style="flex: 1;">
                 <button onclick="simulateLeftwallFollowingAlgorithm()" style="width: 100%; font-size: 1vw; border: none; color: #ffffff; background:#272727; ">Simulate left wall following</button>
+                <button onclick="simulateRightwallFollowingAlgorithm()" style="width: 100%; font-size: 1vw; border: none; color: #ffffff; background:#272727; ">Simulate right wall following</button>
                 <button onclick="runPathAnime()" style="width: 100%; font-size: 1vw; border: none; color: #ffffff; background:#272727; ">Run simulation (shortest path)</button>
             </div>
             <div class="bottom-box" style="flex: 1;">
@@ -547,7 +548,62 @@
                 if(!found) break; 
             }
             draw();
-        }    
+        }   
+        
+        function simulateRightwallFollowingAlgorithm()
+        {
+            leftFollowPath=[];
+            isanimating = false;
+            animationPathind = 0;
+            let r = 0, c =0;
+            let facing = 'E';
+            const visited = new Set();
+            visited.add(`${r},${c}`);
+            leftFollowPath.push([r,c]);
+
+            const dirs = {E: [0,1], S:[1,0], W:[0,-1], N:[-1,0]};
+            const left = {E:'N', N:'W', W:'S', S:'E'};
+            const right = {E:'S', S:'W', W:'N', N:'E'};
+            const turnAround = {E:'W', W:'E', N:'S', S:'N'};
+
+            const finisharea = new Set([[7,7],[7,8],[8,7],[8,8]].map(([r, c]) => r * N + c));
+
+            for (let i = 0; i < 10000; i++)
+            {
+                if(finisharea.has(r * N +c))
+                {
+                    leftFollowPath.push([r,c]);
+                    draw();
+                    return;
+                }
+
+                const tryDirs = 
+                [
+                    right[facing],    // Changed to right first
+                    facing, 
+                    left[facing],     // Changed to left second
+                    turnAround[facing]                  
+                ];
+                let found = false;
+                for(const nextFace of tryDirs)
+                {
+                    const[dr,dc] = dirs[nextFace];
+                    const nr =r + dr, nc = c + dc;
+
+                    if(nr < 0 || nr >= N || nc < 0 || nc >= N) continue;
+                    if(canMove(r,c,nr,nc) === false) continue;
+
+                    r = nr;
+                    c = nc;
+                    facing = nextFace;
+                    leftFollowPath.push([r,c]);
+                    found = true;
+                    break;
+                }
+                if(!found) break;
+            } 
+            draw();   
+        }
     
         
 
