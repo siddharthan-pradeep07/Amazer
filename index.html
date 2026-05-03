@@ -97,7 +97,7 @@
             border-radius: 1vw;
             padding: 0.8vw;
             width: 22vw;
-            height: 44vw;
+            height: 44vw; 
             overflow-y: auto;
             display: flex;
             flex: 1;
@@ -298,11 +298,12 @@
                 <div>Left turns:<span id="sLeft"> —</span></div>
                 <div>Straights:<span id="sStraight"> —</span></div>
                 <div>Dead ends: <span id="sDeadEnds"> —</span></div>
-                <div style="border-top: 1px solid #686981; margin-top:0.5vw; padding-top: 0.5vw">Time Taken: <span id="sTime">—</span>s</div>
+                <div style=" padding-top: 0.5vw">Time Taken: <span id="sTime">—</span>s</div>
             </div>
 
-        <div class="info-box">  
-            <p><b><i>Click the walls to edit the maze.</i></b></p>
+        <div class="info-box" style="padding: 0.5vw; font-size: 1vw;">  
+            <p style="margin: 0.2vw 0;"><b><i>Click the walls to edit the maze.</i></b></p>
+            <p style="margin: 0.2vw 0;"><b><i>Amazer by siddharthan</i></b></p>
         </div>
 
         </div>
@@ -442,7 +443,7 @@
                 {
                     const arr = steps.map(s => `"${s}"`).join(', ');
                     const code =
-                    `const char* DIRECTIONS[] = {\n  ${arr}\n};\nconst int TOTAL_STEPS = ${steps.length};\nint currentStep = 0;\nbool directionMode = true;`;            // Used claude for getting the c++ code.
+                    `const char* DIRECTIONS[] = {\n  ${arr}\n};\nconst int TOTAL_STEPS = ${steps.length};\nint currentStep = 0;\nbool directionMode = true;\n//paste this snipet in your code to run the exact directions.`;            // Used claude for getting the c++ code.
                          document.getElementById('dirContent').innerHTML =
                               `<pre style="font-size:0.9vw; white-space:pre-wrap; color:#eca221;">${code}</pre>`;
                 }
@@ -690,6 +691,8 @@
 
 
             isanimating = false;
+            pathCells = [];
+            leftFollowPath = [];
             animationPathind = 0;
             draw();
         }
@@ -704,6 +707,8 @@
                   vWalls[r][c] = true; 
             
             isanimating = false;
+            pathCells = [];
+            leftFollowPath = [];
             animationPathind = 0;      
             draw();      
         }
@@ -722,6 +727,7 @@
         {
             pathCells = [];
             isanimating = false;
+            leftFollowPath = [];
             animationPathind = 0;
             for (let r = 0; r <= N; r++) for (let c = 0; c < N; c++) hWalls[r][c] = true;
             for (let r = 0; r < N; r++) for (let c = 0; c < + N; c++) vWalls[r][c] = true;
