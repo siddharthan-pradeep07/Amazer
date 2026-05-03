@@ -175,7 +175,7 @@
 
         .bottom-box
         {
-            width: 36vw;
+            width: auto;
             height: auto;
             border-radius: 1vw;
             border: 2px solid #686981;
@@ -188,6 +188,7 @@
             margin-left: 0;
             display: flex;
             flex-direction: column;
+            flex: 1;
             gap: 0.8vw;
         }
 
@@ -195,7 +196,19 @@
         {
             display: flex;
             gap: 0.5vw;
+            /* flex-direction: column; */
             align-items: center;
+        }
+
+        .mazeid-buttons
+        {
+            display: flex;
+            gap: 0.5vw;
+            width: 100%;
+        }
+        .mazeid-buttons .mazebtn
+        {
+            flex: 1;
         }
 
         #mazeIdInput
@@ -204,7 +217,7 @@
             padding: 0.5vw;
             background: #272727;
             border: 1px solid #686981;
-            border-radius: 0.5vw;
+            border-radius: 1vw;
             color: #ffffff;
             font-family: Instrument Serif;
             font-size: 0.9vw;
@@ -220,7 +233,7 @@
             padding: 0 0.8vw;
             background:#272727;
             border: 1px solid #686981;
-            border-radius:0.5vw;
+            border-radius:1dvb;
             color: #ffffff;
             font-size: 0.9vw;
             cursor: pointer;
@@ -242,15 +255,20 @@
         <div class="box">
             <canvas id="cv"></canvas>
         </div>
-        <div class="bottom-box">
-            <button onclick="simulateLeftwallFollowingAlgorithm()" style="width: 100%; font-size: 1vw; border: none; color: #ffffff; background:#272727; ">Simulate left wall following</button>
-            <button onclick="runPathAnime()" style="width: 100%; font-size: 1vw; border: none; color: #ffffff; background:#272727; ">Run simulation (shortest path)</button>
-            <div class="mazeid-box">
-                <input type="text" id="mazeIdInput" placeholder="Paste/Copy Maze ID.">
-                <button class="mazebtn" onclick="copymazeID()">Copy</button>
-                <button class="mazebtn" onclick="loadmazeID()">load</button>
+        <div style="display: flex; flex-direction: row; gap: 1vw;">
+            <div class="bottom-box" style="flex: 1;">
+                <button onclick="simulateLeftwallFollowingAlgorithm()" style="width: 100%; font-size: 1vw; border: none; color: #ffffff; background:#272727; ">Simulate left wall following</button>
+                <button onclick="runPathAnime()" style="width: 100%; font-size: 1vw; border: none; color: #ffffff; background:#272727; ">Run simulation (shortest path)</button>
             </div>
-        </div>
+            <div class="bottom-box" style="flex: 1;">
+                <input type="text" id="mazeIdInput" placeholder="Paste/Copy Maze ID." style="width: 100%; padding: 0.5vw; background: #272727; border: 1px solid #686981; border-radius: 0.5vw; color: #ffffff; font-family: Instrument Serif; font-size: 0.9vw; box-sizing: border-box; margin-bottom: 0.5vw;">
+                <div style="display: flex; gap: 0.5vw;">
+                    <button class="mazebtn" onclick="copymazeID()" style="flex: 1;">Copy</button>
+                    <button class="mazebtn" onclick="loadmazeID()" style="flex: 1;">Load</button>
+                </div>
+            </div>
+        <!-- </div> -->
+       </div>
         </div>
         <div class="side">
 
@@ -892,9 +910,9 @@
         function copymazeID()
         {
             const mazeID = gettingMazestate();
-            const input = document.getElementById('mazeIdInput');
-            input.value = mazeID;
-            input.select();
+            // const input = document.getElementById('mazeIdInput');
+            // input.value = mazeID;
+            // input.select();
             navigator.clipboard.writeText(mazeID).then(() =>
             {
                const btn = event.target;
