@@ -29,7 +29,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #ff6b9d';
+            color: #ff6b9d;
         }
 
         .btn-group
@@ -37,7 +37,7 @@
             display: flex;
             flex-direction: column;
             gap: 0.8vw;
-            border: 2px solid #686981;
+            border: 3px solid #686981;
             border-radius: 1vw;
             padding: 0.8vw;
         }
@@ -201,26 +201,26 @@
             <canvas id="cv"></canvas>
         </div>
         <div class="bottom-box">
-            <button onclick="simulateLeftwallFollowingAlgorithm()" style="width: 100%; height: 100%; font-size: 1vw; border: none; color: #ffffff; background:#272727; ">Simulate left wall following</button>
-            <button onclick="runPathAnime()" style="height: 3vw; width: 100%; font-size: 1vw; border: none; color: #ffffff; background:#272727; ">Run simulation (shortest path)</button>
+            <button onclick="simulateLeftwallFollowingAlgorithm()" style="width: 100%; font-size: 1vw; border: none; color: #ffffff; background:#272727; ">Simulate left wall following</button>
+            <button onclick="runPathAnime()" style="width: 100%; font-size: 1vw; border: none; color: #ffffff; background:#272727; ">Run simulation (shortest path)</button>
         </div>
         </div>
         <div class="side">
 
-        <div class="btn-group">
+        <div class= "btn-group">
             <button onclick="generate()">Generate maze</button>
-            <button onclick="showDirections(dirMode)"><b><i>Generate raw direction code.</i></b></button>
-        </div>    
-
-        <div class="btn-group">
             <button onclick="solve()">find path (shortest)</button>
-            <button onclick="pathCells=[]; isanimating = false; animationPathind = 0; resetStats(); draw();">Clear path</button>
+            <button onclick="showDirections(dirMode)"><b><i>Generate raw direction code.</i></b></button>
+        </div>
+
+        <div class = "btn-group">    
+            <button style="border: 2px solid #e75151" onclick="pathCells=[]; isanimating = false; animationPathind = 0; resetStats(); draw();">Clear path</button>
         </div>
 
         <div class="btn-group">  
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.8vw;">
-               <button style="width:100%; min-width:0;" onclick="clearAllWalls()">Clear all walls</button>
-               <button style="width:100%; min-width:0;" onclick="addAllWalls()">Add all walls</button>
+               <button style="width:100%; min-width:0; border: 2px solid #e75151;" onclick="clearAllWalls()">Clear all walls</button>
+               <button style="width:100%; min-width:0; border: 2px solid #e75151" onclick="addAllWalls()">Add all walls</button>
                <button style="width:100%; min-width:0;" onclick="toggleDeadEnds()">Dead Ends</button>
                <button style="width:100%; min-width:0;" onclick="window.open('https://github.com/siddharthan-pradeep07/Amazer/blob/main/README.md', '_blank')">Read docx.</button>
             </div>
