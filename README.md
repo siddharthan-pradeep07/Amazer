@@ -33,7 +33,16 @@ Code file: The code file is written in C++, Custom genearted based on the path. 
     ```1. total number of cells covered by the path.
        2. no. of right turns
        3. no. of left turns
-       4. no. of strights ```
+       4. no. of strights 
+       5. no, of dead ends
+       6. (approx) Time taken to complete the maze.```
+
+ 11. Click "simulate left wall following", the program draws the path using the algorithm
+ 12. Similarly for right wall following.
+ 13. Click "simulate (shortest path)" to make the program draw a line from start to finish.
+ 14. Click copy maze ID to copy a unique ID (different for all mazes) 
+ 15. Paste the same ID whenever/whereever (in the text box) to load the exact same maze.
+
 
 ## Website output  micromouse code: 
 This code is not part of this project, I wrote this code for my micro-mouse. The website generates the directions code in this format. (coding time for this was not tracked)
