@@ -211,7 +211,7 @@
 
         <div class="btn-group">
             <button onclick="solve()">find path (shortest)</button>
-            <button onclick="pathCells=[]; resetStats(); draw();">Clear path</button>
+            <button onclick="pathCells=[]; isanimating = false; animationPathind = 0; resetStats(); draw();">Clear path</button>
         </div>
 
         <div class="btn-group">  
@@ -282,6 +282,8 @@
         let pathCells = [];
 
         function solve() {
+            isanimating = false;
+            animationPathind = 0;
             const finish = new Set([[7, 7], [7, 8], [8, 7], [8, 8]].map(([r, c]) => r * N + c));
             const prev = Array.from({ length: N }, () => Array(N).fill(null));
             const seen = Array.from({ length: N }, () => Array(N).fill(false));
@@ -378,20 +380,22 @@
             }
 
         let leftFollowPath = [];
+        let animationPathind = 0;
         let isanimating = false;
 
         function runPathAnime()
         {
-            if (pathCells.length < 2)
-            {
-                solve()
-            }
+            pathCells = [];
+            animationPathind = 0;
+            isAnimating = false;
+            leftFollowPath = [];
+            solve();
 
-            if (isanimating) return;
+            if (pathCells.length < 2) return;
 
             isanimating = true;
             animationPathind = 0;
-            const animeSpeed = 40;
+            const animeSpeed = 48;
 
             function animateStep()
             {
@@ -495,19 +499,6 @@
             {
                 document.getElementById(id).textContent = '—';
             });
-        }
-
-        function addAllWalls()
-        {
-            for(let r = 1; r < N; r++)
-               for(let c =0; c < N; c++)
-                  hWalls[r][c] = true;
-
-            for(let r = 0; r < N; r++)
-               for(let c = 1; c < N; c++)
-                  vWalls[r][c] = true; 
-            
-            draw();      
         }
 
         function draw() 
@@ -618,7 +609,24 @@
                 for (let c = 0; c <= N; c++)
                     if (c !== 0 && c !== N) vWalls[r][c] = false;
 
+
+            isanimating = false;
+            animationPathind = 0;
             draw();
+        }
+        function addAllWalls()
+        {
+            for(let r = 1; r < N; r++)
+               for(let c =0; c < N; c++)
+                  hWalls[r][c] = true;
+
+            for(let r = 0; r < N; r++)
+               for(let c = 1; c < N; c++)
+                  vWalls[r][c] = true; 
+            
+            isanimating = false;
+            animationPathind = 0;      
+            draw();      
         }
 
         function lockFinishWalls() 
@@ -634,6 +642,8 @@
         function generate() 
         {
             pathCells = [];
+            isanimating = false;
+            animationPathind = 0;
             for (let r = 0; r <= N; r++) for (let c = 0; c < N; c++) hWalls[r][c] = true;
             for (let r = 0; r < N; r++) for (let c = 0; c < + N; c++) vWalls[r][c] = true;
             const visited = Array.from({ length: N }, () => Array(N).fill(false));
@@ -740,7 +750,11 @@
                     const wx = W + c * CELL, wy = r * CELL;
                     if (mx >= wx - T && mx <= wx + (CELL - W) + T && my >= wy - T && my <= wy + W + T) 
                     {
-                        hWalls[r][c] = !hWalls[r][c]; draw(); return;
+                        hWalls[r][c] = !hWalls[r][c]; 
+                        pathCells = [];
+                        isanimating = false;
+                        animationPathind = 0;
+                        draw(); return;
                     }
                 }
 
@@ -750,7 +764,11 @@
                     const wx = c * CELL, wy = W + r * CELL;
                     if (mx >= wx - T && mx <= wx + W + T && my >= wy - T && my <= wy + (CELL - W) + T) 
                     {
-                        vWalls[r][c] = !vWalls[r][c]; draw(); return;
+                        vWalls[r][c] = !vWalls[r][c];
+                        pathCells = [];
+                        isanimating = false; 
+                        animationPathind = 0;
+                        draw(); return;
                     }
                 }
         });
