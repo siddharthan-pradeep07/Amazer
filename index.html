@@ -176,7 +176,7 @@
         .bottom-box
         {
             width: 36vw;
-            height: 7vw;
+            height: auto;
             border-radius: 1vw;
             border: 2px solid #686981;
             background: #27272700;
@@ -186,6 +186,9 @@
             padding: 0.8vw;
             box-sizing: border-box;
             margin-left: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.8vw;
         }
 
     </style>
@@ -199,7 +202,7 @@
         </div>
         <div class="bottom-box">
             <button onclick="simulateLeftwallFollowingAlgorithm()" style="width: 100%; height: 100%; font-size: 1vw; border: none; color: #ffffff; background:#272727; ">Simulate left wall following</button>
-            <button onclick="runPathAnime()" style="flex: 1; height: 100%; font-size: 1vw; border: none; color: #ffffff; background:#272727; ">Run simulation (shortest path)</button>
+            <button onclick="runPathAnime()" style="height: 3vw; width: 100%; font-size: 1vw; border: none; color: #ffffff; background:#272727; ">Run simulation (shortest path)</button>
         </div>
         </div>
         <div class="side">
