@@ -199,6 +199,7 @@
         </div>
         <div class="bottom-box">
             <button onclick="simulateLeftwallFollowingAlgorithm()" style="width: 100%; height: 100%; font-size: 1vw; border: none; color: #ffffff; background:#272727; ">Simulate left wall following</button>
+            <button onclick="runPathAnime()" style="flex: 1; height: 100%; font-size: 1vw; border: none; color: #ffffff; background:#272727; ">Run simulation (shortest path)</button>
         </div>
         </div>
         <div class="side">
@@ -377,6 +378,36 @@
             }
 
         let leftFollowPath = [];
+        let isanimating = false;
+
+        function runPathAnime()
+        {
+            if (pathCells.length < 2)
+            {
+                solve()
+            }
+
+            if (isanimating) return;
+
+            isanimating = true;
+            animationPathind = 0;
+            const animeSpeed = 40;
+
+            function animateStep()
+            {
+                if(animationPathind < pathCells.length)
+                {
+                    animationPathind++;
+                    draw();
+                    setTimeout(animateStep, animeSpeed);
+                }
+                else
+                {
+                    isanimating = false;
+                }
+            }
+            animateStep();
+        }
 
         function simulateLeftwallFollowingAlgorithm()
         {
@@ -399,18 +430,17 @@
                     left[facing],
                     facing, 
                     right[facing],
-                    turnAround[facing]                    
+                    right[right[facing]]                    
                 ];
                 let found = false;
                 for(const nextFace of tryDirs)
                 {
-                    if(!dirs[nextFace]) continue;
                     const [dr, dc] = dirs[nextFace];
-                    //if (Math.abs(dr) + Math.abs(dc) !==1) continue;
                     const nr = r + dr, nc = c + dc;
 
-                   if (nr >= 0 && nr < N && nc >= 0 && nc < N && canMove(r, c, nr, nc))
-                   {
+                   if (nr < 0 || nr >= N || nc < 0 || nc >= N) continue;
+                   if(canMove(r,c,nr,nc)===false) continue;
+            
                        r = nr;
                        c = nc;
                        //leftFollowPath.push([r,c]);
@@ -423,13 +453,14 @@
                        }
                        else if (r===0 && c === 0)
                        {
-                        break;
+                            draw();
+                            return;
                        }
                        
                        found = true;
                        break;
-                   }
-                }   
+                }  
+                if(!found) break; 
             }
             draw();
         }    
@@ -527,7 +558,8 @@
                 ctx.lineWidth = 1.4;
                 ctx.lineJoin = ctx.lineCap = 'round';
                 ctx.beginPath();
-                for (let i = 0; i < pathCells.length; i++) {
+                const drawlimit = isanimating ? animationPathind : pathCells.length;
+                for (let i = 0; i < drawlimit; i++) {
                     const x = W + pathCells[i][1] * CELL + (CELL - W) / 2;
                     const y = W + pathCells[i][0] * CELL + (CELL - W) / 2;
                     i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
