@@ -189,13 +189,13 @@
             display: flex;
             flex-direction: column;
             flex: 1;
-            gap: 0.8vw;
+            gap: 0.5vw;
         }
 
         .mazeid-box
         {
             display: flex;
-            gap: 0.5vw;
+            gap: 0.2vw;
             /* flex-direction: column; */
             align-items: center;
         }
@@ -229,11 +229,11 @@
         }
         .mazebtn
         {
-            height: 2.2vw ;
+            height: 2.4vw ;
             padding: 0 0.8vw;
             background:#272727;
             border: 1px solid #686981;
-            border-radius:1dvb;
+            border-radius:1vw;
             color: #ffffff;
             font-size: 0.9vw;
             cursor: pointer;
@@ -261,8 +261,8 @@
                 <button onclick="runPathAnime()" style="width: 100%; font-size: 1vw; border: none; color: #ffffff; background:#272727; ">Run simulation (shortest path)</button>
             </div>
             <div class="bottom-box" style="flex: 1;">
-                <input type="text" id="mazeIdInput" placeholder="Paste/Copy Maze ID." style="width: 100%; padding: 0.5vw; background: #272727; border: 1px solid #686981; border-radius: 0.5vw; color: #ffffff; font-family: Instrument Serif; font-size: 0.9vw; box-sizing: border-box; margin-bottom: 0.5vw;">
-                <div style="display: flex; gap: 0.5vw;">
+                <input type="text" id="mazeIdInput" placeholder="Paste Maze ID." style="width: 100%; padding: 0.5vw; background: #272727; border: 1px solid #686981; border-radius: 1vw; color: #ffffff; font-family: Instrument Serif; font-size: 0.9vw; box-sizing: border-box;">
+                <div style="display: flex; gap: 0.5vw; border-radius: 1vw;">
                     <button class="mazebtn" onclick="copymazeID()" style="flex: 1;">Copy</button>
                     <button class="mazebtn" onclick="loadmazeID()" style="flex: 1;">Load</button>
                 </div>
@@ -292,13 +292,13 @@
         </div>
 
             <div class="info-box">
-                <B>Data:</B>
+                <B>Path Data:</B>
                 <div>Total cells:<span id="sCells"> —</span></div>
                 <div>Right turns:<span id="sRight"> —</span></div>
                 <div>Left turns:<span id="sLeft"> —</span></div>
                 <div>Straights:<span id="sStraight"> —</span></div>
                 <div>Dead ends: <span id="sDeadEnds"> —</span></div>
-
+                <div style="border-top: 1px solid #686981; margin-top:0.5vw; padding-top: 0.5vw">Time Taken: <span id="sTime">—</span>s</div>
             </div>
 
         <div class="info-box">  
@@ -374,6 +374,7 @@
                     document.getElementById('sRight').textContent = s.right;
                     document.getElementById('sLeft').textContent = s.left;
                     document.getElementById('sStraight').textContent = s.straight;
+                    time();
                     draw();
                     return;
                 }
@@ -938,6 +939,13 @@
                 btn.textContent = 'ID Loaded';
                 setTimeout(() => btn.textContent = originaltext, 1500)
             }
+        }
+        function time()
+        {
+            if (pathCells.length < 2) return;
+            const celltraveltime = 1.5;
+            const totaltime = (pathCells.length - 1) * celltraveltime;
+            document.getElementById('sTime').textContent = totaltime.toFixed(2);
         }
 
 
