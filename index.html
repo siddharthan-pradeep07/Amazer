@@ -96,8 +96,8 @@
             border: 3px solid #686981;
             border-radius: 1vw;
             padding: 0.8vw;
-            width: 22vw;
-            height: 44vw; 
+            width: 42vw;
+            height: 20vw; 
             overflow-y: auto;
             display: flex;
             flex: 1;
@@ -142,10 +142,12 @@
             border: 1px solid #3f3f3f;
             border-radius: 0.8vw;
             padding: 0.8vw;
+            /* height: 26vw; */
             flex: 1;
             overflow-y: auto;
             line-height: 2;
-            min-height: 10vw;
+            min-height: 27vw;
+            max-height: 27vw;
             background: #272727;
         }
 
@@ -259,7 +261,7 @@
             <div class="bottom-box" style="flex: 1;">
                 <button onclick="simulateLeftwallFollowingAlgorithm()" style="width: 100%; font-size: 1vw; border: none; color: #ffffff; background:#272727; ">Simulate left wall following</button>
                 <button onclick="simulateRightwallFollowingAlgorithm()" style="width: 100%; font-size: 1vw; border: none; color: #ffffff; background:#272727; ">Simulate right wall following</button>
-                <button onclick="runPathAnime()" style="width: 100%; font-size: 1vw; border: none; color: #ffffff; background:#272727; ">Run simulation (shortest path)</button>
+                <!-- <button onclick="runPathAnime()" style="width: 100%; font-size: 1vw; border: none; color: #ffffff; background:#272727; ">Run simulation (shortest path)</button> -->
             </div>
             <div class="bottom-box" style="flex: 1;">
                 <input type="text" id="mazeIdInput" placeholder="Paste Maze ID." style="width: 100%; padding: 0.5vw; background: #272727; border: 1px solid #686981; border-radius: 1vw; color: #ffffff; font-family: Instrument Serif; font-size: 0.9vw; box-sizing: border-box;">
@@ -309,18 +311,29 @@
 
         </div>
 
-       <div class="dir-box" id="dirbox">
-         <div style="display:flex; justify-content:space-between; align-items:center;">
-             <b>Directions [Start to finish]</b>
-             <button class="copy-btn" onclick="copyDirections()">Copy</button>
-         </div>
-         <div class="dir-toggle">
-            <button class="toggle-btn active" id="btnRaw" onclick= "switchMode('raw')">Raw</button>
-            <button class="toggle-btn" id="btnCode" onclick= "switchMode('code')">Code</button>
-         </div>
-         <div class="dir-inner" id="dirContent">
-            Click find path, and then click generate raw code.
-        </div>
+       <div style="display: flex; flex-direction: column; gap: 0.8vw;">
+           <div class="dir-box" id="dirbox">
+             <div style="display:flex; justify-content:space-between; align-items:center;">
+                 <b>Directions [Start to finish]</b>
+                 <button class="copy-btn" onclick="copyDirections()">Copy</button>
+             </div>
+             <div class="dir-toggle">
+                <button class="toggle-btn active" id="btnRaw" onclick= "switchMode('raw')">Raw</button>
+                <button class="toggle-btn" id="btnCode" onclick= "switchMode('code')">Code</button>
+             </div>
+             <div class="dir-inner" id="dirContent">
+                Click find path, and then click generate raw code.
+            </div>
+           </div>
+
+           <div class="bottom-box" style="flex: 0; width: 42vw;">
+               <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.8vw;">
+                    <button onclick="runPathAnime()" style="width: 100%; font-size: 1vw; border: none; color: #ffffff; background:#272727; height: 2.7vw; border-radius: 1vw;">Run simulation (shortest path)</button>
+                    <button onclick="runPathAnime()" style="width: 100%; font-size: 1vw; border: none; color: #ffffff; background:#272727; height: 2.7vw; border-radius: 1vw;">2</button>
+                    <button onclick="runPathAnime()" style="width: 100%; font-size: 1vw; border: none; color: #ffffff; background:#272727; height: 2.7vw; border-radius: 1vw;">3</button>
+                    <button onclick="runPathAnime()" style="width: 100%; font-size: 1vw; border: none; color: #ffffff; background:#272727; height: 2.7vw; border-radius: 1vw;">4</button>
+                </div>
+            </div> 
        </div>
 
     </div>
