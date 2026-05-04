@@ -637,23 +637,23 @@
 
             const finish = new Set([[7,7],[7,8],[8,7],[8,8]].map(([r, c]) => r * N + c));
             const visited = Array.from({ length: N}, () => Array(N).fill(false));
-            const parent = Array.from({ length: N}, () => Array(N).fill(null));
+            //const parent = Array.from({ length: N}, () => Array(N).fill(null));
 
-            const queue = [[0,0]];
+            const stack = [[0,0]];
             visited[0][0] = true;
+            leftFollowPath.push([0,0]);
 
-            while (queue.length)
+            while (stack.length)
             {
-                const [r,c] = queue.shift();
-                leftFollowPath.push([r,c]);
+                const [r,c] = stack[stack.length - 1];
 
                 if(finish.has(r*N + c))
                 {
                     draw();
                     return;
                 }
-
-                for(const [nr,nc,open] of 
+                let found = false;
+                for(const [nr,nc,open] of
                 [
                     [r - 1, c, !hWalls[r][c]],
                     [r + 1, c, !hWalls[r + 1][c]],
@@ -663,8 +663,32 @@
                 {
                     if (nr < 0 || nr >= N || nc < 0 || nc >= N || !open || visited[nr][nc]) continue;
                     visited[nr][nc] = true;
-                    queue.push([nr,nc]);
+                    leftFollowPath.push([nr, nc]);
+                    stack.push([nr,nc]);
+                    found = true;
+                    break;
                 }
+                if(!found)
+                {
+                    stack.pop();
+                    leftFollowPath.pop();
+                    draw();
+                }
+
+                // for(const [nr,nc,open] of 
+                // [
+                //     [r - 1, c, !hWalls[r][c]],
+                //     [r + 1, c, !hWalls[r + 1][c]],
+                //     [r, c- 1, !vWalls[r][c]],
+                //     [r, c+ 1, !vWalls[r][c + 1]],
+                // ])
+                // {
+                //  if (nr < 0 || nr >= N || nc < 0 || nc >= N || !open || visited[nr][nc]) continue;
+                //  visited[nr][nc] = true;
+                //  //parent[nr][nc] = [r, c];
+                //  leftFollowPath.push([nr, nc]);
+                //  stack.push([nr,nc]);
+                // }
             }
           draw();
         }
