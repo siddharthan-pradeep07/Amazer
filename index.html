@@ -330,7 +330,7 @@
                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.8vw;">
                     <button onclick="runPathAnime()" style="width: 100%; font-size: 1vw; border: 3px solid #007041; color: #ffffff; background:#272727; height: 2.7vw; border-radius: 1vw;">Run simulation (shortest path)</button>
                     <button onclick="runPathAnime()" style="width: 100%; font-size: 1vw; border: 2px solid #686981; color: #ffffff; background:#27272700; height: 2.7vw; border-radius: 1vw;">Maze size:</button>
-                    <button onclick="simulateBFS()" style="width: 100%; font-size: 1vw; border: 2px solid #272727; color: #ffffff; background:#272727; height: 2.7vw; border-radius: 1vw;">Simulate BFS algorithm</button>
+                    <button onclick="simulateBFS()" style="width: 100%; font-size: 1vw; border: 2px solid #272727; color: #ffffff; background:#272727; height: 2.7vw; border-radius: 1vw;">Simulate DFS algorithm</button>
                     <button onclick="runPathAnime()" style="width: 100%; font-size: 1vw; border: 2px solid #686981; color: #ffffff; background:#27272700; height: 2.7vw; border-radius: 1vw;">Configure finsish cells.</button>
                 </div>
             </div> 
@@ -631,6 +631,7 @@
 
         function simulateBFS()
         {
+            pathCells = [];
             leftFollowPath = [];
             isanimating = false;
             animationPathind= 0;
@@ -643,8 +644,16 @@
             visited[0][0] = true;
             leftFollowPath.push([0,0]);
 
-            while (stack.length)
+            let paused = false;
+
+            function DFSstep()
             {
+                if(!stack.length)
+                {
+                    draw();
+                    return;
+                }
+
                 const [r,c] = stack[stack.length - 1];
 
                 if(finish.has(r*N + c))
@@ -671,8 +680,7 @@
                 if(!found)
                 {
                     stack.pop();
-                    leftFollowPath.pop();
-                    draw();
+                    if(leftFollowPath.length > 1) leftFollowPath.pop();
                 }
 
                 // for(const [nr,nc,open] of 
@@ -689,8 +697,10 @@
                 //  leftFollowPath.push([nr, nc]);
                 //  stack.push([nr,nc]);
                 // }
+                draw();
+                setTimeout(DFSstep, 50);
             }
-          draw();
+          DFSstep();
         }
         
 
