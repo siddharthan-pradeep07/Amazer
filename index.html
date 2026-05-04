@@ -29,7 +29,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #ff6b9c9c;
+            color: #ffd000;
         }
 
         .btn-group
@@ -259,8 +259,8 @@
         </div>
         <div style="display: flex; flex-direction: row; gap: 1vw;">
             <div class="bottom-box" style="flex: 1;">
-                <button onclick="pathCells=[]; isanimating = false; simulateLeftwallFollowingAlgorithm()" style="width: 100%; font-size: 1vw; border: none; color: #ffffff; background:#272727; ">Simulate left wall following</button>
-                <button onclick="pathCells=[]; isanimating = false; simulateRightwallFollowingAlgorithm()" style="width: 100%; font-size: 1vw; border: none; color: #ffffff; background:#272727; ">Simulate right wall following</button>
+                <button onclick="pathCells=[]; isanimating = false; simulateLeftwallFollowingAlgorithm()" style="width: 100%; font-size: 1vw; border: none; color: #ffffff; background:#272727; ">Show left wall following (path)</button>
+                <button onclick="pathCells=[]; isanimating = false; simulateRightwallFollowingAlgorithm()" style="width: 100%; font-size: 1vw; border: none; color: #ffffff; background:#272727; ">Show right wall following (path)</button>
                 <!-- <button onclick="runPathAnime()" style="width: 100%; font-size: 1vw; border: none; color: #ffffff; background:#272727; ">Run simulation (shortest path)</button> -->
             </div>
             <div class="bottom-box" style="flex: 1;">
@@ -276,7 +276,7 @@
         <div class="side">
 
         <div class= "btn-group">
-            <button onclick="generate()">Generate maze</button>
+            <button onclick="resetStats(); generate() ">Generate maze</button>
             <button onclick="leftFollowPath=[]; solve()">find path (shortest)</button>
             <button onclick="showDirections(dirMode)"><b><i>Generate raw direction code.</i></b></button>
         </div>
@@ -330,7 +330,7 @@
                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.8vw;">
                     <button onclick="runPathAnime()" style="width: 100%; font-size: 1vw; border: 3px solid #007041; color: #ffffff; background:#272727; height: 2.7vw; border-radius: 1vw;">Run simulation (shortest path)</button>
                     <button onclick="runPathAnime()" style="width: 100%; font-size: 1vw; border: 2px solid #686981; color: #ffffff; background:#27272700; height: 2.7vw; border-radius: 1vw;">Maze size:</button>
-                    <button onclick="simulateBFS()" style="width: 100%; font-size: 1vw; border: 2px solid #272727; color: #ffffff; background:#272727; height: 2.7vw; border-radius: 1vw;">Simulate DFS algorithm</button>
+                    <button onclick="simulateBFS()" style="width: 100%; font-size: 1vw; border: 2px solid #ffea2a; color: #ffffff; background:#272727; height: 2.7vw; border-radius: 1vw;">Simulate DFS algorithm</button>
                     <button onclick="runPathAnime()" style="width: 100%; font-size: 1vw; border: 2px solid #686981; color: #ffffff; background:#27272700; height: 2.7vw; border-radius: 1vw;">Configure finsish cells.</button>
                 </div>
             </div> 
@@ -466,6 +466,7 @@
         let leftFollowPath = [];
         let animationPathind = 0;
         let isanimating = false;
+        let shouldhidethemouse = false;
 
         function runPathAnime()
         {
@@ -658,7 +659,14 @@
 
                 if(finish.has(r*N + c))
                 {
+                    shouldhidethemouse = true;
                     draw();
+                    setTimeout(() =>
+                    {
+                        leftFollowPath = [];
+                        shouldhidethemouse = false;
+                        draw();
+                    }, 2000);
                     return;
                 }
                 let found = false;
@@ -698,7 +706,7 @@
                 //  stack.push([nr,nc]);
                 // }
                 draw();
-                setTimeout(DFSstep, 50);
+                setTimeout(DFSstep, 60);
             }
           DFSstep();
         }
@@ -798,6 +806,23 @@
                 }
                 ctx.stroke();
                 ctx.restore();
+
+                if(leftFollowPath.length > 0)
+                {
+                    const lastind = leftFollowPath.length - 1;
+                    const mouseX = W + leftFollowPath[lastind][1]*CELL + (CELL-W)/2;
+                    const mouseY = W + leftFollowPath[lastind][0]*CELL + (CELL-W)/2;
+                    const mouseSize = 11;
+
+                    ctx.fillStyle = '#ffd000';
+                    ctx.fillRect(mouseX - mouseSize/2, mouseY - mouseSize/2, mouseSize, mouseSize);
+
+                    // if(shouldhidethemouse && leftFollowPath.length === 0)
+                    // {
+
+                    // }
+
+                }
             }
 
             if (showDeadEnds)

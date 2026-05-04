@@ -42,6 +42,7 @@ Code file: The code file is written in C++, Custom genearted based on the path. 
  13. Click "simulate (shortest path)" to make the program gradually draw a line from start to finish.
  14. Click copy maze ID to copy a unique ID (different for all mazes) 
  15. Paste the same ID whenever/whereever (in the text box) to load the exact same maze.
+ 16. Click the "Simulate DFS algorithm" button to make the program simulate DFS (Depth first Search) Algorithm. more info about the alogrithm [Here](https://medium.com/@MLSec_Forge/the-development-of-algorithms-in-micromouse-competitions-and-its-impact-on-machine-learning-2837444cce60) 
 
 
 ## Website output  micromouse code: 
