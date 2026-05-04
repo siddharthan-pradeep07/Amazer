@@ -259,8 +259,8 @@
         </div>
         <div style="display: flex; flex-direction: row; gap: 1vw;">
             <div class="bottom-box" style="flex: 1;">
-                <button onclick="simulateLeftwallFollowingAlgorithm()" style="width: 100%; font-size: 1vw; border: none; color: #ffffff; background:#272727; ">Simulate left wall following</button>
-                <button onclick="simulateRightwallFollowingAlgorithm()" style="width: 100%; font-size: 1vw; border: none; color: #ffffff; background:#272727; ">Simulate right wall following</button>
+                <button onclick="pathCells=[]; isanimating = false; simulateLeftwallFollowingAlgorithm()" style="width: 100%; font-size: 1vw; border: none; color: #ffffff; background:#272727; ">Simulate left wall following</button>
+                <button onclick="pathCells=[]; isanimating = false; simulateRightwallFollowingAlgorithm()" style="width: 100%; font-size: 1vw; border: none; color: #ffffff; background:#272727; ">Simulate right wall following</button>
                 <!-- <button onclick="runPathAnime()" style="width: 100%; font-size: 1vw; border: none; color: #ffffff; background:#272727; ">Run simulation (shortest path)</button> -->
             </div>
             <div class="bottom-box" style="flex: 1;">
@@ -277,12 +277,12 @@
 
         <div class= "btn-group">
             <button onclick="generate()">Generate maze</button>
-            <button onclick="solve()">find path (shortest)</button>
+            <button onclick="leftFollowPath=[]; solve()">find path (shortest)</button>
             <button onclick="showDirections(dirMode)"><b><i>Generate raw direction code.</i></b></button>
         </div>
 
         <div class = "btn-group">    
-            <button style="border: 2px solid #e75151" onclick="pathCells=[]; isanimating = false; animationPathind = 0; resetStats(); draw();">Clear path</button>
+            <button style="border: 2px solid #e75151" onclick="pathCells=[]; isanimating = false; animationPathind = 0; leftFollowPath= []; resetStats(); draw();">Clear path</button>
         </div>
 
         <div class="btn-group">  
@@ -328,10 +328,10 @@
 
            <div class="bottom-box" style="flex: 0; width: 42vw;">
                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.8vw;">
-                    <button onclick="runPathAnime()" style="width: 100%; font-size: 1vw; border: none; color: #ffffff; background:#272727; height: 2.7vw; border-radius: 1vw;">Run simulation (shortest path)</button>
-                    <button onclick="runPathAnime()" style="width: 100%; font-size: 1vw; border: none; color: #ffffff; background:#272727; height: 2.7vw; border-radius: 1vw;">2</button>
-                    <button onclick="runPathAnime()" style="width: 100%; font-size: 1vw; border: none; color: #ffffff; background:#272727; height: 2.7vw; border-radius: 1vw;">3</button>
-                    <button onclick="runPathAnime()" style="width: 100%; font-size: 1vw; border: none; color: #ffffff; background:#272727; height: 2.7vw; border-radius: 1vw;">4</button>
+                    <button onclick="runPathAnime()" style="width: 100%; font-size: 1vw; border: 3px solid #007041; color: #ffffff; background:#272727; height: 2.7vw; border-radius: 1vw;">Run simulation (shortest path)</button>
+                    <button onclick="runPathAnime()" style="width: 100%; font-size: 1vw; border: 2px solid #686981; color: #ffffff; background:#27272700; height: 2.7vw; border-radius: 1vw;">Maze size:</button>
+                    <button onclick="simulateBFS()" style="width: 100%; font-size: 1vw; border: 2px solid #272727; color: #ffffff; background:#272727; height: 2.7vw; border-radius: 1vw;">Simulate BFS algorithm</button>
+                    <button onclick="runPathAnime()" style="width: 100%; font-size: 1vw; border: 2px solid #686981; color: #ffffff; background:#27272700; height: 2.7vw; border-radius: 1vw;">Configure finsish cells.</button>
                 </div>
             </div> 
        </div>
@@ -627,6 +627,46 @@
             if (c2 < c1) return !vWalls[r1][c1];
             if (c2 > c1) return !vWalls[r1][c1+1];
             return false;
+        }
+
+        function simulateBFS()
+        {
+            leftFollowPath = [];
+            isanimating = false;
+            animationPathind= 0;
+
+            const finish = new Set([[7,7],[7,8],[8,7],[8,8]].map(([r, c]) => r * N + c));
+            const visited = Array.from({ length: N}, () => Array(N).fill(false));
+            const parent = Array.from({ length: N}, () => Array(N).fill(null));
+
+            const queue = [[0,0]];
+            visited[0][0] = true;
+
+            while (queue.length)
+            {
+                const [r,c] = queue.shift();
+                leftFollowPath.push([r,c]);
+
+                if(finish.has(r*N + c))
+                {
+                    draw();
+                    return;
+                }
+
+                for(const [nr,nc,open] of 
+                [
+                    [r - 1, c, !hWalls[r][c]],
+                    [r + 1, c, !hWalls[r + 1][c]],
+                    [r, c- 1, !vWalls[r][c]],
+                    [r, c+ 1, !vWalls[r][c + 1]],
+                ])
+                {
+                    if (nr < 0 || nr >= N || nc < 0 || nc >= N || !open || visited[nr][nc]) continue;
+                    visited[nr][nc] = true;
+                    queue.push([nr,nc]);
+                }
+            }
+          draw();
         }
         
 
