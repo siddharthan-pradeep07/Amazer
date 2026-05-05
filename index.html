@@ -29,7 +29,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #ffd000;
+            color: #1e2836;
         }
 
         .btn-group
@@ -367,7 +367,7 @@
         function solve() {
             isanimating = false;
             animationPathind = 0;
-            const finish = finishCells.size > 0 ? finishCells : defaultFinishCells;
+            const finish = usingCustomFinish ? finishCells : defaultFinishCells;
             const prev = Array.from({ length: N }, () => Array(N).fill(null));
             const seen = Array.from({ length: N }, () => Array(N).fill(false));
             const q = [[0, 0]];
@@ -470,6 +470,7 @@
         let shouldhidethemouse = false;
         let configuringFinishCells = false;
         let finishCells = new Set();
+        let usingCustomFinish = false;
         const defaultFinishCells = new Set([[7,7],[7,8],[8,7],[8,8]].map(([r,c]) => r * N + c));
         const mouseImage = new Image();
         mouseImage.src = 'photos/Micro-mouse-design-amazer-removebg-preview.png';
@@ -643,7 +644,7 @@
             isanimating = false;
             animationPathind= 0;
 
-            const finish = finishCells.size > 0 ? finishCells : defaultFinishCells;
+            const finish = usingCustomFinish ? finishCells : defaultFinishCells;
             const visited = Array.from({ length: N}, () => Array(N).fill(false));
             //const parent = Array.from({ length: N}, () => Array(N).fill(null));
 
@@ -774,6 +775,10 @@
 
             if(configuringFinishCells)
             {
+
+                ctx.fillStyle = 'rgba(100, 100, 255, 0.03)'; /////////////////
+                ctx.fillRect(0,0,SZ,SZ);
+
                 for(let r = 0; r < N; r++)
                 {
                     for(let c = 0; c < N; c++)
@@ -784,32 +789,37 @@
                             ctx.fillStyle = '#ef4444';
                             ctx.fillRect(W + c * CELL, W + r * CELL, CELL - W, CELL - W);
                         }
-                        else if(isAdjacenttoFinish(r, c))
-                        {
-                            ctx.fillStyle = '#3b82f677';
-                            ctx.fillRect(W + c * CELL, W + r * CELL, CELL - W, CELL - W);
-                        }
                     }
                 }
+                ctx.fillStyle = '#ffffff';
+                ctx.font = '16px Instrument Serif';
+                ctx.textAlign = 'center';
+                ctx.fillText('Select your finish cells', SZ / 2, 20);
 
                 ctx.fillStyle = '#22c55e';
                 ctx.fillRect(W, W, CELL - W, CELL - W);
                 ctx.fillStyle = '#ffffff';
-                ctx.font = 'Instrument Serif';
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle';
+                //ctx.textBaseline = 'middle';
                 ctx.fillText('S', W + (CELL - W) / 2, W + (CELL - W) / 2);
     
                 return;
             }
 
-            const finish = configuringFinishCells ? finishCells : defaultFinishCells;
+            const finish = usingCustomFinish ? finishCells : defaultFinishCells;
 
             //const finish = new Set([[7, 7], [7, 8], [8, 7], [8, 8]].map(([r, c]) => r * N + c));
 
             //end cell x4 label red clr
             ctx.fillStyle = '#ef4444';
-            ctx.fillRect(W + 7 * CELL, W + 7 * CELL, 2 * (CELL - W) + W, 2 * (CELL - W) + W);
+            for(let key of finish)
+            {
+                const r = Math.floor(key /N);
+                const c = key % N;
+
+                ctx.fillStyle = '#ef4444';
+                ctx.fillRect(W + c * CELL, W + r * CELL, CELL -W, CELL -W);
+            }
+            //ctx.fillRect(W + 7 * CELL, W + 7 * CELL, 2 * (CELL - W) + W, 2 * (CELL - W) + W); 
             ctx.fillStyle = '#ffffff';
             ctx.font = 'Instrument Serif';
             ctx.textAlign = 'center';
@@ -940,6 +950,19 @@
             if(configuringFinishCells)                                            //stop
             {
                 configuringFinishCells = false;
+                
+                if(finishCells.size > 0)
+                {
+                    usingCustomFinish = true;
+
+                    generate();
+                    lockCustomFinishWalls();
+                }
+                else
+                {
+                    usingCustomFinish = false;
+                    finishCells = new Set(defaultFinishCells);
+                }
                 document.getElementById('configFinishBtn').style.background = '#27272700';
                 document.getElementById('configFinishBtn').style.border = '2px solid #686981';
             }
@@ -947,8 +970,41 @@
             {
                 configuringFinishCells = true;
                 finishCells = new Set();
+                usingCustomFinish = false;
                 document.getElementById('configFinishBtn').style.background = '#2b7a0f';
                 document.getElementById('configFinishBtn').style.border = '2px solid #4ade80';
+            }
+            draw();
+        }
+
+        function lockCustomFinishWalls()
+        {
+            if (finishCells.size === 0) return;
+
+            for(let key of finishCells)
+            {
+                const r = Math.floor(key/N);
+                const c = key % N;
+
+                if(!finishCells.has((r-1) * N + c) && r > 0) //upper wall
+                   hWalls[r][c] = true;
+                else if (r > 0)
+                   hWalls[r][c] = false;
+
+                if(!finishCells.has((r+1) * N + c) && r < N -1)// lower wall
+                   hWalls[r + 1][c] = true;
+                else if (r < N -1)
+                   hWalls[r +1][c] = false;
+                
+                if(!finishCells.has(r * N + (c -1)) && c>0)
+                   vWalls[r][c] = true;
+                else if(c>0)
+                   vWalls[r][c] = false;
+                
+                if(!finishCells.has(r*N + (c + 1)) && c < N -1)
+                   vWalls[r][c +1] = true;
+                else if(c < N - 1)
+                   vWalls[r][c + 1] = false;        
             }
         }
 
@@ -1274,5 +1330,4 @@
         finishCells = new Set(defaultFinishCells);
     </script>
 </body>
-
 </html>
