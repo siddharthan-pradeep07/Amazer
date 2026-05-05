@@ -329,9 +329,9 @@
            <div class="bottom-box" style="flex: 0; width: 42vw;">
                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.8vw;">
                     <button onclick="runPathAnime()" style="width: 100%; font-size: 1vw; border: 3px solid #007041; color: #ffffff; background:#272727; height: 2.7vw; border-radius: 1vw;">Run simulation (shortest path)</button>
-                    <button onclick="runPathAnime()" style="width: 100%; font-size: 1vw; border: 2px solid #686981; color: #ffffff; background:#27272700; height: 2.7vw; border-radius: 1vw;">Maze size:</button>
+                    <button onclick="" style="width: 100%; font-size: 1vw; border: 2px solid #686981; color: #ffffff; background:#27272700; height: 2.7vw; border-radius: 1vw;">Maze size:</button>
                     <button onclick="simulateBFS()" style="width: 100%; font-size: 1vw; border: 2px solid #ffea2a; color: #ffffff; background:#272727; height: 2.7vw; border-radius: 1vw;">Simulate DFS algorithm</button>
-                    <button onclick="runPathAnime()" style="width: 100%; font-size: 1vw; border: 2px solid #686981; color: #ffffff; background:#27272700; height: 2.7vw; border-radius: 1vw;">Configure finsish cells.</button>
+                    <button onclick="" style="width: 100%; font-size: 1vw; border: 2px solid #686981; color: #ffffff; background:#27272700; height: 2.7vw; border-radius: 1vw;">Configure finsish cells.</button>
                 </div>
             </div> 
        </div>
@@ -467,6 +467,8 @@
         let animationPathind = 0;
         let isanimating = false;
         let shouldhidethemouse = false;
+        const mouseImage = new Image();
+        mouseImage.src = 'photos/Micro-mouse-design-amazer-removebg-preview.png';
 
         function runPathAnime()
         {
@@ -663,7 +665,7 @@
                     draw();
                     setTimeout(() =>
                     {
-                        leftFollowPath = [];
+                        //leftFollowPath = [];
                         shouldhidethemouse = false;
                         draw();
                     }, 2000);
@@ -706,7 +708,7 @@
                 //  stack.push([nr,nc]);
                 // }
                 draw();
-                setTimeout(DFSstep, 60);
+                setTimeout(DFSstep, 180);
             }
           DFSstep();
         }
@@ -812,10 +814,21 @@
                     const lastind = leftFollowPath.length - 1;
                     const mouseX = W + leftFollowPath[lastind][1]*CELL + (CELL-W)/2;
                     const mouseY = W + leftFollowPath[lastind][0]*CELL + (CELL-W)/2;
-                    const mouseSize = 11;
+                    const mouseSize = 50;
 
-                    ctx.fillStyle = '#ffd000';
-                    ctx.fillRect(mouseX - mouseSize/2, mouseY - mouseSize/2, mouseSize, mouseSize);
+                    if(mouseImage.complete)
+                    {
+                        ctx.drawImage(mouseImage, mouseX - mouseSize/2, mouseY - mouseSize/2, mouseSize, mouseSize);
+                    }
+                    else
+                    {
+                       ctx.fillStyle = '#ffd000';
+                       ctx.fillRect(mouseX - mouseSize/2, mouseY - mouseSize/2, mouseSize, mouseSize); 
+
+                    }
+
+                    // ctx.fillStyle = '#ffd000';
+                    // ctx.fillRect(mouseX - mouseSize/2, mouseY - mouseSize/2, mouseSize, mouseSize);
 
                     // if(shouldhidethemouse && leftFollowPath.length === 0)
                     // {
