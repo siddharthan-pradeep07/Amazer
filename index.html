@@ -816,9 +816,27 @@
                     const mouseY = W + leftFollowPath[lastind][0]*CELL + (CELL-W)/2;
                     const mouseSize = 50;
 
+                    let rotation = 0;
+                    if(leftFollowPath.length > 1)
+                    {
+                        const curr = leftFollowPath[lastind];
+                        const prev = leftFollowPath[lastind - 1];
+                        const dr = curr[0] - prev[0];
+                        const dc = curr[1] - prev[1]
+
+                        if(dr < 0) rotation = 0;
+                        else if(dr>0) rotation = Math.PI;
+                        else if(dc>0) rotaion = Math.PI / 2;
+                        else if(dc<0) rotation = 3 * Math.PI /2;
+                    }
+
                     if(mouseImage.complete)
                     {
+                        ctx.save();
+                        ctx.translate(mouseX, mouseY);
+                        ctx.rotate(rotation);
                         ctx.drawImage(mouseImage, mouseX - mouseSize/2, mouseY - mouseSize/2, mouseSize, mouseSize);
+                        ctx.restore();
                     }
                     else
                     {
