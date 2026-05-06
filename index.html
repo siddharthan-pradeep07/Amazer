@@ -1267,6 +1267,7 @@
         function gettingMazestate()
         {
             let state = '';
+
             for (let r = 0; r <= N; r++)
             {
                 for(let c = 0; c < N; c++)
@@ -1281,13 +1282,20 @@
                     state += vWalls[r][c] ? '1':'0';
                 }
             }
+
+            state += '|';
+            state += Array.from(finishCells).join(',');
+
             return btoa(state);
         }
+
         function loadingMazestate(encoded)
         {
             try
             {
-                const state = atob(encoded);
+                const decoded = atob(encoded);
+                const [state, finishPart] = decoded.split('|');
+
                 let idx = 0;
 
                 for (let r = 0; r <= N; r++)
@@ -1305,11 +1313,35 @@
                    }
                 }
 
+                if(finishPart)
+                {
+                    finishCells = new Set
+                    (
+                        finishPart.split(',').map(x => parseInt(x))
+                    );
+                    usingCustomFinish = true;
+                }
+                else
+                {
+                    finishCells = new Set(defaultFinishCells);
+                    usingCustomFinish = false;
+                }
+
+                if(usingCustomFinish)
+                {
+                    lockCustomFinishWalls();
+                }
+
+                else
+                {
+                    lockFinishWalls();
+                }
+
                 pathCells = [];
                 leftFollowPath = [];
                 isanimating = false;
                 animationPathind= 0;
-                lockFinishWalls();
+                //lockFinishWalls();
                 draw();
                 return true;
             }
