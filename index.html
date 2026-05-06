@@ -247,6 +247,49 @@
             background: #2b2929;
         }
 
+        .mouseSelect
+        {
+           width: 100%;
+           height: 2.7vw;
+           border: 2px solid #686981;
+           border-radius: 1vw;
+           display: flex;
+           align-items:center;
+           justify-content: space-between;
+           padding: 0 0.6vw;
+           box-sizing: border-box;
+           font-family: Instrument Serif;
+           font-size: 0.9vw;
+           color: white;
+        }
+
+        .mouse-options
+        {
+            display: flex;
+            gap: 0.4vw;
+        }
+
+        .mouse-option
+        {
+            height: 1.8vw;
+            width: 1.8vw;
+            object-fit: contain;
+            border-radius: 0.5vw;
+            border: 2px solid #27272700;
+            cursor: pointer;
+            background: #a19b9b/* #272727 */;
+        }
+
+        .mouse-option:hover
+        {
+            border: 2px soild #7c7c91;
+        }
+        
+        .mouse-option.active
+        {
+            border: 2px solid #e75d5d;
+            border-radius: 0.6vw;
+        }
 
     </style>
 </head>
@@ -329,9 +372,18 @@
            <div class="bottom-box" style="flex: 0; width: 42vw;">
                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.8vw;">
                     <button onclick="runPathAnime(); stopDFS = true;" style="width: 100%; font-size: 1vw; border: 3px solid #129e64; color: #ffffff; background:#272727; height: 2.7vw; border-radius: 1vw;">Run simulation (shortest path)</button>
-                    <button onclick="" style="width: 100%; font-size: 1vw; border: 2px solid #686981; color: #ffffff; background:#27272700; height: 2.7vw; border-radius: 1vw;">Maze size:</button>
+                    <!-- <button onclick="" style="width: 100%; font-size: 1vw; border: 2px solid #686981; color: #ffffff; background:#27272700; height: 2.7vw; border-radius: 1vw;">Maze size:</button> -->
+                     <div class="mouseSelect">
+                        <span>Select mouse:</span>
+                        <div class="mouse-options">
+                            <img src="photos/mice_images/mouse3.png" class="mouse-option active" onclick="selectMouse(0)">
+                            <img src="photos/mice_images/mouse2.png" class="mouse-option" onclick="selectMouse(1)">
+                            <img src="photos/mice_images/mouse1.png" class="mouse-option" onclick="selectMouse(2)">
+                        </div>
+                     </div>
+
                     <button onclick="simulateBFS()" style="width: 100%; font-size: 1vw; border: 3px solid #129e64; color: #ffffff; background:#272727; height: 2.7vw; border-radius: 1vw;">Simulate DFS algorithm</button>
-                    <button onclick="toggleConfigureFinishCells()" style="width: 100%; font-size: 1vw; border: 2px solid #686981; color: #ffffff; background:#272727; height: 2.7vw; border-radius: 1vw;" id="configFinishBtn">Configure finish cells.</button>
+                    <button onclick="toggleConfigureFinishCells(); resetStats();" style="width: 100%; font-size: 1vw; border: 2px solid #686981; color: #ffffff; background:#272727; height: 2.7vw; border-radius: 1vw;" id="configFinishBtn">Configure finish cells.</button>
                 </div>
             </div> 
        </div>
@@ -472,8 +524,29 @@
         let finishCells = new Set();
         let usingCustomFinish = false;
         const defaultFinishCells = new Set([[7,7],[7,8],[8,7],[8,8]].map(([r,c]) => r * N + c));
+        //const mouseImage = new Image();
+        //mouseImage.src = 'photos/Micro-mouse-design-amazer-removebg-preview.png';
+        const mouseImages = 
+        [
+            'photos/mice_images/mouse3.png',
+            'photos/mice_images/mouse2.png',
+            'photos/mice_images/mouse1.png'
+        ];
+        let selectMouseIndex = 0;
+
         const mouseImage = new Image();
-        mouseImage.src = 'photos/Micro-mouse-design-amazer-removebg-preview.png';
+        mouseImage.src = mouseImages[selectMouseIndex];
+
+        function selectMouse(index)
+        {
+            selectMouseIndex = index;
+            mouseImage.src = mouseImages[index];
+
+            document.querySelectorAll('.mouse-option').forEach((el, i) =>
+            {
+                el.classList.toggle('active', i === index);
+            });
+        }
 
         function runPathAnime()
         {
@@ -639,6 +712,7 @@
 
         function simulateBFS()
         {
+            stopDFS = false;
             pathCells = [];
             leftFollowPath = [];
             isanimating = false;
@@ -828,10 +902,10 @@
             ctx.fillStyle = '#ef4444';
             ctx.fillRect
             (
-                minC * CELL + 1,
-                minR * CELL + 1,
-                (maxC - minC + 1) * CELL - 1,
-                (maxR - minR + 1) * CELL -1
+                minC * CELL + W,
+                minR * CELL + W,
+                (maxC - minC + 1) * CELL - W,
+                (maxR - minR + 1) * CELL - W
             );
             //ctx.fillRect(W + 7 * CELL, W + 7 * CELL, 2 * (CELL - W) + W, 2 * (CELL - W) + W); 
             ctx.fillStyle = '#ffffff';
