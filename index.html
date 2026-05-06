@@ -990,7 +990,7 @@
                     usingCustomFinish = true;
 
                     generate();
-                    lockCustomFinishWalls();
+                    //lockCustomFinishWalls();
                 }
                 else
                 {
@@ -1037,12 +1037,12 @@
                 else if (r < N -1)
                    hWalls[r +1][c] = false;
                 
-                if(!finishCells.has(r * N + (c -1)) && c>0)
+                if(!finishCells.has(r * N + (c -1)) && c > 0)//left side wall
                    vWalls[r][c] = true;
                 else if(c>0)
                    vWalls[r][c] = false;
                 
-                if(!finishCells.has(r*N + (c + 1)) && c < N -1)
+                if(!finishCells.has(r * N + (c + 1)) && c < N -1)//right side wall
                    vWalls[r][c +1] = true;
                 else if(c < N - 1)
                    vWalls[r][c + 1] = false;        
@@ -1102,6 +1102,38 @@
             vWalls[7][8] = false; vWalls[8][8] = false;
         }
 
+        function getFinishedborders()
+        {
+            const borders = [];
+
+            for(let key of finishCells)
+            {
+                const r = Math.floor(key/N);
+                const c = key % N;
+                
+                if (r === 0 || !finishCells.has((r - 1) * N + c))
+                {
+                    borders.push({ type: 'h', r: r, c: c });
+                }
+                
+                if (r === N - 1 || !finishCells.has((r + 1) * N + c))
+                {
+                    borders.push({ type: 'h', r: r + 1, c: c });
+                }    
+
+                if (c === 0 || !finishCells.has(r * N + (c - 1)))
+                {
+                    borders.push({ type: 'v', r: r, c: c });
+                }    
+
+                if (c === N - 1 || !finishCells.has(r * N + (c + 1)))
+                {
+                    borders.push({ type: 'v', r: r, c: c + 1 });
+                }    
+            }
+            return borders;
+        }
+
         function generate() 
         {
             pathCells = [];
@@ -1153,18 +1185,34 @@
                 lockFinishWalls();
             }
 
-            const borders =
-                [
-                    { type: 'h', r: 7, c: 7 }, { type: 'h', r: 7, c: 8 },
-                    { type: 'h', r: 9, c: 7 }, { type: 'h', r: 9, c: 8 },
-                    { type: 'v', r: 7, c: 7 }, { type: 'v', r: 7, c: 9 },
-                    { type: 'v', r: 8, c: 7 }, { type: 'v', r: 8, c: 9 },
-                ].sort(() => Math.random() - 0.5);
+            // const borders =
+            //     [
+            //         { type: 'h', r: 7, c: 7 }, { type: 'h', r: 7, c: 8 },
+            //         { type: 'h', r: 9, c: 7 }, { type: 'h', r: 9, c: 8 },
+            //         { type: 'v', r: 7, c: 7 }, { type: 'v', r: 7, c: 9 },
+            //         { type: 'v', r: 8, c: 7 }, { type: 'v', r: 8, c: 9 },
+            //     ].sort(() => Math.random() - 0.5);
 
-            const entryWall = borders[0];
+            // const entryWall = borders[0];
 
-            if (entryWall.type === 'h') hWalls[entryWall.r][entryWall.c] = false;
-            else vWalls[entryWall.r][entryWall.c] = false;
+            // if (entryWall.type === 'h') hWalls[entryWall.r][entryWall.c] = false;
+            // else vWalls[entryWall.r][entryWall.c] = false;
+
+            const borders = getFinishedborders().sort(() => Math.random() - 0.5);
+
+            if (borders.length > 0)
+            {
+                const entryWall = borders[0];
+
+                if(entryWall.type === 'h')
+                {
+                    hWalls[entryWall.r][entryWall.c] = false;
+                }
+                else
+                {
+                    vWalls[entryWall.r][entryWall.c] = false;
+                }
+            }
 
 
 
@@ -1416,8 +1464,9 @@
         }
 
 
-        generate();
         finishCells = new Set(defaultFinishCells);
+        usingCustomFinish = false;
+        generate();
     </script>
 </body>
 </html>
