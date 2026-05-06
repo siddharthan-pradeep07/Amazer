@@ -29,7 +29,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #1e2836;
+            color: #fc444477;
         }
 
         .btn-group
@@ -331,7 +331,7 @@
                     <button onclick="runPathAnime(); stopDFS = true;" style="width: 100%; font-size: 1vw; border: 3px solid #129e64; color: #ffffff; background:#272727; height: 2.7vw; border-radius: 1vw;">Run simulation (shortest path)</button>
                     <button onclick="" style="width: 100%; font-size: 1vw; border: 2px solid #686981; color: #ffffff; background:#27272700; height: 2.7vw; border-radius: 1vw;">Maze size:</button>
                     <button onclick="simulateBFS()" style="width: 100%; font-size: 1vw; border: 3px solid #129e64; color: #ffffff; background:#272727; height: 2.7vw; border-radius: 1vw;">Simulate DFS algorithm</button>
-                    <button onclick="toggleConfigureFinishCells()" style="width: 100%; font-size: 1vw; border: 2px solid #686981; color: #ffffff; background:#27272700; height: 2.7vw; border-radius: 1vw;" id="configFinishBtn">Configure finish cells.</button>
+                    <button onclick="toggleConfigureFinishCells()" style="width: 100%; font-size: 1vw; border: 2px solid #686981; color: #ffffff; background:#272727; height: 2.7vw; border-radius: 1vw;" id="configFinishBtn">Configure finish cells.</button>
                 </div>
             </div> 
        </div>
@@ -809,15 +809,30 @@
 
             //const finish = new Set([[7, 7], [7, 8], [8, 7], [8, 8]].map(([r, c]) => r * N + c));
 
-            ctx.fillStyle = '#ef4444';
+            
+            let minR = Infinity, maxR = -Infinity;
+            let minC = Infinity, maxC = -Infinity;
+
             for(let key of finish)
             {
                 const r = Math.floor(key /N);
                 const c = key % N;
-
-                ctx.fillStyle = '#ef4444';
-                ctx.fillRect(W + c * CELL, W + r * CELL, CELL -W, CELL -W);
+                minR = Math.min(minR, r);
+                maxR = Math.max(maxR, r);
+                minC = Math.min(minC, c);
+                maxC = Math.max(maxC, c); 
+                //ctx.fillStyle = '#ef4444';
+                //ctx.fillRect(c * CELL + 1, r * CELL + 1, CELL -1, CELL -1);
             }
+
+            ctx.fillStyle = '#ef4444';
+            ctx.fillRect
+            (
+                minC * CELL + 1,
+                minR * CELL + 1,
+                (maxC - minC + 1) * CELL - 1,
+                (maxR - minR + 1) * CELL -1
+            );
             //ctx.fillRect(W + 7 * CELL, W + 7 * CELL, 2 * (CELL - W) + W, 2 * (CELL - W) + W); 
             ctx.fillStyle = '#ffffff';
             ctx.font = 'Instrument Serif';
@@ -964,6 +979,8 @@
 
         function toggleConfigureFinishCells()
         {
+            const btn = document.getElementById('configFinishBtn');
+
             if(configuringFinishCells)                                            //stop
             {
                 configuringFinishCells = false;
@@ -980,8 +997,11 @@
                     usingCustomFinish = false;
                     finishCells = new Set(defaultFinishCells);
                 }
-                document.getElementById('configFinishBtn').style.background = '#27272700';
-                document.getElementById('configFinishBtn').style.border = '2px solid #686981';
+                //document.getElementById('configFinishBtn').style.background = '#27272700';
+                //document.getElementById('configFinishBtn').style.border = '2px solid #686981';
+                btn.style.background = '#272727';
+                btn.style.border = '2px solid #686981';
+                btn.textContent = 'Configure finish cells.';
             }
             else                                                                  //start
             {
@@ -989,8 +1009,11 @@
                 finishCells = new Set();
                 usingCustomFinish = false;
                 clearAllWalls();
-                document.getElementById('configFinishBtn').style.background = '#2b7a0f';
-                document.getElementById('configFinishBtn').style.border = '2px solid #4ade80';
+                //document.getElementById('configFinishBtn').style.background = '#2b7a0f';
+                //document.getElementById('configFinishBtn').style.border = '2px solid #4ade80';
+                btn.style.background = '#fc444477';
+                btn.style.border = '2px solid #686981';
+                btn.textContent = 'Click again to implement';
             }
             draw();
         }
