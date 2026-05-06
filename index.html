@@ -809,7 +809,6 @@
 
             //const finish = new Set([[7, 7], [7, 8], [8, 7], [8, 8]].map(([r, c]) => r * N + c));
 
-            //end cell x4 label red clr
             ctx.fillStyle = '#ef4444';
             for(let key of finish)
             {
@@ -824,7 +823,25 @@
             ctx.font = 'Instrument Serif';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
-            ctx.fillText('F', W + 7 * CELL + (CELL - W + W), W + 7 * CELL + (CELL - W + W));
+            //ctx.fillText('F', W + 7 * CELL + (CELL - W + W), W + 7 * CELL + (CELL - W + W));
+
+            let avgR = 0; 
+            let avgC = 0;
+            for (let key of finish)
+            {
+                avgR += Math.floor(key/N);
+                avgC += key % N;
+            }
+            avgR /= finish.size;
+            avgC /= finish.size;
+
+            ctx.fillText
+            (
+                'F',
+                W + avgC * CELL + (CELL - W) /2,
+                W + avgR * CELL + (CELL - W) /2
+            );
+
 
             if (pathCells.length > 1) 
             {
@@ -971,6 +988,7 @@
                 configuringFinishCells = true;
                 finishCells = new Set();
                 usingCustomFinish = false;
+                clearAllWalls();
                 document.getElementById('configFinishBtn').style.background = '#2b7a0f';
                 document.getElementById('configFinishBtn').style.border = '2px solid #4ade80';
             }
@@ -1070,7 +1088,15 @@
             for (let r = 0; r <= N; r++) for (let c = 0; c < N; c++) hWalls[r][c] = true;
             for (let r = 0; r < N; r++) for (let c = 0; c < + N; c++) vWalls[r][c] = true;
             const visited = Array.from({ length: N }, () => Array(N).fill(false));
-            [[7, 7], [7, 8], [8, 7], [8, 8]].forEach(([r, c]) => visited[r][c] = true);
+            //[[7, 7], [7, 8], [8, 7], [8, 8]].forEach(([r, c]) => visited[r][c] = true);
+            const finish = usingCustomFinish ? finishCells : defaultFinishCells;
+
+            for(let key of finish)
+            {
+                const r = Math.floor(key /N);
+                const c = key % N;
+                visited[r][c] = true;
+            }
             const stack = [[0, 0]];
             visited[0][0] = true;
             const dirs = [[0, 1], [1, 0], [0, -1], [-1, 0]];
@@ -1093,7 +1119,16 @@
                 if (!moved) stack.pop();
             }
 
-            lockFinishWalls();
+            //lockFinishWalls();
+
+            if(usingCustomFinish)
+            {
+                lockCustomFinishWalls();
+            }
+            else
+            {
+                lockFinishWalls();
+            }
 
             const borders =
                 [
