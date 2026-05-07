@@ -250,13 +250,15 @@
         .mouseSelect
         {
            width: 100%;
-           height: 2.7vw;
+           height: auto;
+           min-height: 2.7vw;
+           max-height: 2.7vw;
            border: 2px solid #686981;
            border-radius: 1vw;
            display: flex;
            align-items:center;
            justify-content: space-between;
-           padding: 0 0.6vw;
+           padding: 0.4vw 0.6vw;
            box-sizing: border-box;
            font-family: Instrument Serif;
            font-size: 0.9vw;
@@ -266,18 +268,19 @@
         .mouse-options
         {
             display: flex;
-            gap: 0.4vw;
+            gap: 0.3vw;
         }
 
         .mouse-option
         {
-            height: 1.8vw;
-            width: 1.8vw;
+            height: 2vw;
+            width: 2vw;
             object-fit: contain;
             border-radius: 0.5vw;
             border: 2px solid #27272700;
             cursor: pointer;
-            background: #a19b9b/* #272727 */;
+            background: #a19b9b00;
+            /* box-sizing: border-box; */
         }
 
         .mouse-option:hover
@@ -287,8 +290,11 @@
         
         .mouse-option.active
         {
-            border: 2px solid #e75d5d;
-            border-radius: 0.6vw;
+             border: 2px solid #e75d5d; 
+             border-radius: 0.6vw; 
+            /* height: 4vw; */
+            /* width: 4vw; */
+            /* border-bottom: 3px solid #e75151; */
         }
 
     </style>
@@ -376,9 +382,9 @@
                      <div class="mouseSelect">
                         <span>Select mouse:</span>
                         <div class="mouse-options">
-                            <img src="photos/mice_images/mouse3.png" class="mouse-option active" onclick="selectMouse(0)">
-                            <img src="photos/mice_images/mouse2.png" class="mouse-option" onclick="selectMouse(1)">
-                            <img src="photos/mice_images/mouse1.png" class="mouse-option" onclick="selectMouse(2)">
+                            <img src="photos/mice_images/mousev3.png" class="mouse-option active" onclick="selectMouse(0)">
+                            <img src="photos/mice_images/mousev2.png" class="mouse-option" onclick="selectMouse(1)">
+                            <img src="photos/mice_images/mousev1.png" class="mouse-option" onclick="selectMouse(2)">
                         </div>
                      </div>
 
@@ -528,9 +534,9 @@
         //mouseImage.src = 'photos/Micro-mouse-design-amazer-removebg-preview.png';
         const mouseImages = 
         [
-            'photos/mice_images/mouse3.png',
-            'photos/mice_images/mouse2.png',
-            'photos/mice_images/mouse1.png'
+            'photos/mice_images/mousev3.png',
+            'photos/mice_images/mousev2.png',
+            'photos/mice_images/mousev1.png'
         ];
         let selectMouseIndex = 0;
 
@@ -971,7 +977,7 @@
                     const lastind = leftFollowPath.length - 1;
                     const mouseX = W + leftFollowPath[lastind][1]*CELL + (CELL-W)/2;
                     const mouseY = W + leftFollowPath[lastind][0]*CELL + (CELL-W)/2;
-                    const mouseSize = 61;
+                    const mouseSize = 25;
 
                     let rotation = 0;
                     if(leftFollowPath.length > 1)
