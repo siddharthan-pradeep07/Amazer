@@ -29,7 +29,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #fc444477;
+            color: #a1f06c;
         }
 
         .btn-group
@@ -1012,7 +1012,7 @@
             if(leftFollowPath.length > 1)
             {
                 ctx.save();
-                ctx.strokeStyle = '#ff6b9c9c';
+                ctx.strokeStyle = '#a1f06c';///////
                 ctx.lineWidth = 1.2;
                 ctx.lineJoin = ctx.lineCap = 'round';
                 ctx.setLineDash([3,3]);
@@ -1277,22 +1277,22 @@
                 const r = Math.floor(key/N);
                 const c = key % N;
                 
-                if (r === 0 || !finishCells.has((r - 1) * N + c))
+                if (r > 0 && !finishCells.has((r - 1) * N + c))
                 {
                     borders.push({ type: 'h', r: r, c: c });
                 }
                 
-                if (r === N - 1 || !finishCells.has((r + 1) * N + c))
+                if (r < N - 1 && !finishCells.has((r + 1) * N + c))
                 {
                     borders.push({ type: 'h', r: r + 1, c: c });
                 }    
 
-                if (c === 0 || !finishCells.has(r * N + (c - 1)))
+                if (c > 0 && !finishCells.has(r * N + (c - 1)))
                 {
                     borders.push({ type: 'v', r: r, c: c });
                 }    
 
-                if (c === N - 1 || !finishCells.has(r * N + (c + 1)))
+                if (c < N - 1 && !finishCells.has(r * N + (c + 1)))
                 {
                     borders.push({ type: 'v', r: r, c: c + 1 });
                 }    
