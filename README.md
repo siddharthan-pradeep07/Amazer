@@ -1,7 +1,7 @@
 # Welcome to the instruction guide for using Amazer. #
 
 ### About:
-Amazer is a web platfrom, for analizing the mazes for micro-mouse competion.
+Amazer is a web platfrom, for analizing the mazes for micro-mouse competion. It has various features like, maze generation, path finding, Algorithm simulations, maze code generation. It also provides data regarding the maze.
 
 ### Micro-mouse: 
 It is a robotic mouse that solves a maze. (Reference: Take a look at the video by veritasium in youtube) [View video](https://youtu.be/ZMQbHMgK2rw?si=y8FAdEtewEqJMsnd) 
@@ -44,6 +44,7 @@ Code file: The code file is written in C++, Custom genearted based on the path. 
  15. Paste the same ID whenever/whereever (in the text box) to load the exact same maze.
  16. Click the "Simulate DFS algorithm" button to make the program simulate DFS (Depth first Search) Algorithm. more info about the alogrithm [Here](https://medium.com/@MLSec_Forge/the-development-of-algorithms-in-micromouse-competitions-and-its-impact-on-machine-learning-2837444cce60) 
  17. Configure custom finish by clicking the "Configure finish cells" button, select the finish cells and then press "click again to implement" button. 
+ 18. Similarly, the user can also configure the start cell.
 
 
 ## Website output  micromouse code: 
@@ -79,9 +80,6 @@ const int RIGHT_TARGET   = 7;
 const int LEFT_LOCKOUT_CYCLES = 6;
 int leftLockout = 0;
 
-// ---------------------------------------------------------------
-// Median filter ultrasonic read
-// ---------------------------------------------------------------
 long getDistance(int trigPin, int echoPin) {
   long readings[5];
   for (int i = 0; i < 5; i++) {
@@ -103,10 +101,6 @@ long getDistance(int trigPin, int echoPin) {
       }
   return readings[2];
 }
-
-// ---------------------------------------------------------------
-// Motor control
-// ---------------------------------------------------------------
 void motorA(int speed) {
   digitalWrite(AIN1, speed > 0 ? HIGH : LOW);
   digitalWrite(AIN2, speed > 0 ? LOW : HIGH);
@@ -118,12 +112,10 @@ void motorB(int speed) {
   analogWrite(PWMB, abs(speed));
 }
 void stopMotors() { motorA(0); motorB(0); }
-
 void driveForward() {
   motorA(BASE_SPEED);
   motorB(BASE_SPEED);
 }
-
 void moveForwardSelfStabilize(long distLeft, long distRight) {
   int error = 0;
   bool hasLeft  = (distLeft  < WALL_THRESHOLD);
@@ -135,14 +127,12 @@ void moveForwardSelfStabilize(long distLeft, long distRight) {
   motorA(BASE_SPEED - correction);
   motorB(BASE_SPEED + correction);
 }
-
 void nudge(int ms) {
   driveForward();
   delay(ms);
   stopMotors();
   delay(80);
 }
-
 void nudgeBack(int ms) {
   motorA(-BASE_SPEED);
   motorB(-BASE_SPEED);
@@ -150,7 +140,6 @@ void nudgeBack(int ms) {
   stopMotors();
   delay(80);
 }
-
 void spinLeft(int ms) {
   motorA(-TURN_SPEED);
   motorB(TURN_SPEED);
@@ -169,11 +158,6 @@ void spinRight(int ms) {
 bool isFrontBlocked(long d) {
   return (d <= FRONT_STOP) || (d <= FRONT_SATURATED);
 }
-
-// ---------------------------------------------------------------
-// Single fast read — no median, used only for turn decisions
-// where we need a quick fresh sample
-// ---------------------------------------------------------------
 long quickDist(int trigPin, int echoPin) {
   digitalWrite(trigPin, LOW);  delayMicroseconds(2);
   digitalWrite(trigPin, HIGH); delayMicroseconds(10);
@@ -181,11 +165,6 @@ long quickDist(int trigPin, int echoPin) {
   long dur = pulseIn(echoPin, HIGH, 30000);
   return (dur == 0) ? 999 : dur * 0.034 / 2;
 }
-
-// ---------------------------------------------------------------
-// At a junction, take 5 quick reads and return true if
-// the majority (3+) show open. Fast but noise-resistant.
-// ---------------------------------------------------------------
 bool isOpenMajority(int trigPin, int echoPin) {
   int openCount = 0;
   for (int i = 0; i < 5; i++) {
@@ -194,30 +173,22 @@ bool isOpenMajority(int trigPin, int echoPin) {
   }
   return openCount >= 3;
 }
-
-// ---------------------------------------------------------------
-// Turn routines — nudge is done BEFORE calling these
-// ---------------------------------------------------------------
 void turnLeft() {
   spinLeft(SPIN_90_MS);
   nudge(POST_TURN_NUDGE);
   leftLockout = LEFT_LOCKOUT_CYCLES;
 }
-
 void turnRight() {
   spinRight(SPIN_90_MS);
   nudge(POST_TURN_NUDGE);
   leftLockout = LEFT_LOCKOUT_CYCLES;
 }
-
 void turnAround() {
   spinRight(SPIN_180_MS);
   nudgeBack(POST_UTURN_BACK);
   nudge(POST_TURN_NUDGE);
   leftLockout = LEFT_LOCKOUT_CYCLES;
 }
-
-// ---------------------------------------------------------------
 void setup() {
   Serial.begin(115200);
   pinMode(trigLeft,  OUTPUT); pinMode(echoLeft,  INPUT);
@@ -232,14 +203,6 @@ void setup() {
   digitalWrite(13, HIGH); delay(500);
   digitalWrite(13, LOW);  delay(500);
 }
-
-// ---------------------------------------------------------------
-// LOOP — strict left-hand wall following
-//
-// IMPORTANT: turnAround() is only called after the robot has
-// physically stopped at the front wall AND re-confirmed with
-// isOpenMajority() that BOTH left and right are truly closed.
-// ---------------------------------------------------------------
 void loop() {
   long distLeft  = getDistance(trigLeft,  echoLeft);
   long distFront = getDistance(trigFront, echoFront);
@@ -252,11 +215,6 @@ void loop() {
   bool rightWall = (distRight < WALL_THRESHOLD);
 
   if (leftLockout > 0) leftLockout--;
-
-  // -------------------------------------------------------
-  // 1. LEFT OPEN — highest priority (left-hand rule)
-  //    Only fires when lockout has fully expired
-  // -------------------------------------------------------
   if (!leftWall && leftLockout == 0) {
     if (isOpenMajority(trigLeft, echoLeft)) {
       nudge(PRE_TURN_NUDGE);
@@ -265,27 +223,16 @@ void loop() {
       moveForwardSelfStabilize(distLeft, distRight);
     }
   }
-
-  // -------------------------------------------------------
-  // 2. FRONT CLEAR — go straight
-  // -------------------------------------------------------
   else if (!frontWall) {
     moveForwardSelfStabilize(distLeft, distRight);
   }
-
-  // -------------------------------------------------------
-  // 3. FRONT BLOCKED — stop, nudge to junction centre,
-  //    then do a FRESH majority read on ALL three sensors
-  //    before deciding. U-turn is absolute last resort.
-  // -------------------------------------------------------
   else {
     stopMotors();
     delay(100);
     nudge(PRE_TURN_NUDGE);
     stopMotors();
-    delay(150); // settle before reading
+    delay(150); 
 
-    // Fresh majority reads on all sides
     bool leftOpen  = isOpenMajority(trigLeft,  echoLeft);
     bool rightOpen = isOpenMajority(trigRight, echoRight);
     bool frontOpen = !isFrontBlocked(getDistance(trigFront, echoFront));
@@ -293,17 +240,13 @@ void loop() {
     Serial.printf("  Junction: L=%d F=%d R=%d\n", leftOpen, frontOpen, rightOpen);
 
     if (leftOpen) {
-      // Left available — always prefer left (left-hand rule)
       turnLeft();
     } else if (frontOpen) {
-      // Front somehow cleared after nudge — go straight
       leftLockout = LEFT_LOCKOUT_CYCLES;
       nudge(POST_TURN_NUDGE);
     } else if (rightOpen) {
-      // Right available
       turnRight();
     } else {
-      // All three sides confirmed closed by majority vote — true dead end
       turnAround();
     }
   }
