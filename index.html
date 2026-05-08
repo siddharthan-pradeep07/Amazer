@@ -1422,9 +1422,11 @@
         function isDeadEnd(r, c)
         {
             if (r === startCell[0] && c === startCell[1]) return false;
-            const fc = Math.floor(N/2) - 1;
-            const fr = Math.floor(N/2) - 1;
-            if ((r === fr || r === fr+1) && (c ===fc || c === fc+1)) return false;
+            // const fc = Math.floor(N/2) - 1;
+            // const fr = Math.floor(N/2) - 1;
+            // if ((r === fr || r === fr+1) && (c ===fc || c === fc+1)) return false;
+            const finish = usingCustomFinish ? finishCells : defaultFinishCells;
+            if (finish.has(r*N+c)) return false;
             let openCount = 0;
             if (!hWalls[r][c]) openCount++;
             if (!hWalls[r+1][c]) openCount++;
