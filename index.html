@@ -285,7 +285,7 @@
 
         .mouse-option:hover
         {
-            border: 2px soild #7c7c91;
+            border: 2px solid #7c7c91;
         }
         
         .mouse-option.active
@@ -377,19 +377,24 @@
 
            <div class="bottom-box" style="flex: 0; width: 42vw;">
                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.8vw;">
-                    <button onclick="runPathAnime(); stopDFS = true;" style="width: 100%; font-size: 1vw; border: 3px solid #129e64; color: #ffffff; background:#272727; height: 2.7vw; border-radius: 1vw;">Run simulation (shortest path)</button>
+                    <button onclick="runPathAnime();" style="width: 100%; font-size: 1vw; border: 3px solid #129e64; color: #ffffff; background:#272727; height: 2.7vw; border-radius: 1vw;">Run simulation (shortest path)</button>
                     <!-- <button onclick="" style="width: 100%; font-size: 1vw; border: 2px solid #686981; color: #ffffff; background:#27272700; height: 2.7vw; border-radius: 1vw;">Maze size:</button> -->
                      <div class="mouseSelect">
                         <span>Select mouse:</span>
                         <div class="mouse-options">
                             <img src="photos/mice_images/mousev3.png" class="mouse-option active" onclick="selectMouse(0)">
-                            <img src="photos/mice_images/mousev2.png" class="mouse-option" onclick="selectMouse(1)">
-                            <img src="photos/mice_images/mousev1.png" class="mouse-option" onclick="selectMouse(2)">
+                            <img src="photos/mice_images/mousev4.png" class="mouse-option" onclick="selectMouse(1)">
+                            <img src="photos/mice_images/mousev2.png" class="mouse-option" onclick="selectMouse(2)">
+                            <img src="photos/mice_images/mousev1.png" class="mouse-option" onclick="selectMouse(3)">
                         </div>
                      </div>
 
                     <button onclick="simulateBFS()" style="width: 100%; font-size: 1vw; border: 3px solid #129e64; color: #ffffff; background:#272727; height: 2.7vw; border-radius: 1vw;">Simulate DFS algorithm</button>
-                    <button onclick="toggleConfigureFinishCells(); resetStats();" style="width: 100%; font-size: 1vw; border: 2px solid #686981; color: #ffffff; background:#272727; height: 2.7vw; border-radius: 1vw;" id="configFinishBtn">Configure finish cells.</button>
+                    <!-- <button onclick="toggleConfigureFinishCells(); resetStats();" style="width: 100%; font-size: 1vw; border: 2px solid #686981; color: #ffffff; background:#272727; height: 2.7vw; border-radius: 1vw;" id="configFinishBtn">Configure finish cells.</button>f -->
+                    <div style="display:flex; gap:0.8vw;">
+                        <button onclick="toggleConfigureFinishCells(); resetStats();" style="flex:1; font-size: 0.9vw; border: 2px solid #686981; color: #ffffff; background: #272727; height: 2.7vw; border-radius: 1vw;" id ="configFinishBtn">Configure Finish</button>
+                        <button onclick="toggleConfigureStartCell(); resetStats();" style="flex:1; font-size: 0.9vw; border: 2px solid #686981; color: #ffffff; background:#272727; height: 2.7vw; border-radius: 1vw;" id="configStartBtn">Configure start</button>
+                    </div> 
                 </div>
             </div> 
        </div>
@@ -428,8 +433,8 @@
             const finish = usingCustomFinish ? finishCells : defaultFinishCells;
             const prev = Array.from({ length: N }, () => Array(N).fill(null));
             const seen = Array.from({ length: N }, () => Array(N).fill(false));
-            const q = [[0, 0]];
-            seen[0][0] = true;
+            const q = [[startCell[0], startCell[1]]];
+            seen[startCell[0]][startCell[1]] = true;
 
             while (q.length) {
                 const [r, c] = q.shift();
@@ -472,7 +477,7 @@
             {
                 dirMode = mode;
                 document.getElementById('btnRaw').classList.toggle('active', mode === 'raw');
-                document.getElementById('btnCode').classList.toggle('active', mode === 'raw');
+                document.getElementById('btnCode').classList.toggle('active', mode === 'code');
                 showDirections(dirMode);
             }
 
@@ -526,15 +531,22 @@
         let isanimating = false;
         let stopDFS = false;
         let shouldhidethemouse = false;
+
         let configuringFinishCells = false;
+        let configuringStartCell = false;
+
         let finishCells = new Set();
         let usingCustomFinish = false;
+
+        let startCell = [0,0];
+
         const defaultFinishCells = new Set([[7,7],[7,8],[8,7],[8,8]].map(([r,c]) => r * N + c));
         //const mouseImage = new Image();
         //mouseImage.src = 'photos/Micro-mouse-design-amazer-removebg-preview.png';
         const mouseImages = 
         [
             'photos/mice_images/mousev3.png',
+            'photos/mice_images/mousev4.png',
             'photos/mice_images/mousev2.png',
             'photos/mice_images/mousev1.png'
         ];
@@ -558,7 +570,7 @@
         {
             pathCells = [];
             animationPathind = 0;
-            isAnimating = false;
+            isanimating = false;
             leftFollowPath = [];
             solve();
 
@@ -587,7 +599,7 @@
         function simulateLeftwallFollowingAlgorithm() //scariest function.
         {
             leftFollowPath = [];
-            let r = 0, c = 0;
+            let r = startCell[0], c = startCell[1];
             let facing = 'E'; 
             const visited = new Set();
             visited.add(`${r},${c}`);
@@ -655,7 +667,7 @@
             leftFollowPath=[];
             isanimating = false;
             animationPathind = 0;
-            let r = 0, c =0;
+            let r = startCell[0], c = startCell[1];
             let facing = 'E';
             const visited = new Set();
             visited.add(`${r},${c}`);
@@ -728,9 +740,9 @@
             const visited = Array.from({ length: N}, () => Array(N).fill(false));
             //const parent = Array.from({ length: N}, () => Array(N).fill(null));
 
-            const stack = [[0,0]];
-            visited[0][0] = true;
-            leftFollowPath.push([0,0]);
+            const stack = [startCell];
+            visited[startCell[0]][startCell[1]] = true;
+            leftFollowPath.push([startCell[0], startCell[1]]);
 
             let paused = false;
 
@@ -845,13 +857,29 @@
                     ctx.fillRect(c * CELL, r * CELL, W, W);
 
             //start cell label green clr
+            const sr = startCell[0];
+            const sc = startCell[1];
+
             ctx.fillStyle = '#22c55e';
-            ctx.fillRect(W, W, CELL - W, CELL - W);
+            ctx.fillRect
+            (
+                W + sc * CELL,
+                W + sr * CELL,
+                CELL - W,
+                CELL - W
+            );
+
             ctx.fillStyle = '#ffffff';
             ctx.font = 'Instrument Serif';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
-            ctx.fillText('S', W + (CELL - W) / 2, W + (CELL - W) / 2);
+
+            ctx.fillText
+            (
+                'S', 
+                W + sc * CELL + (CELL - W) / 2, 
+                W + sr * CELL + (CELL - W) / 2
+            );
 
             if(configuringFinishCells)
             {
@@ -1138,6 +1166,30 @@
             draw();
         }
 
+        function toggleConfigureStartCell()
+        {
+            const btn = document.getElementById('configStartBtn');
+
+            if(configuringStartCell)
+            {
+                configuringStartCell = false;
+
+                btn.style.background = '#272727';
+                btn.style.border = '2px solid #686981';
+                btn.textContent = 'Configure start'
+            }
+            else
+            {
+                configuringStartCell = true;
+                configuringFinishCells = false;
+
+                btn.style.background = '#22c55e55';
+                btn.style.border = '2px solid #686981';
+                btn.textContent = 'Click a cell';
+            }
+            draw();
+        }
+
         function clearAllWalls() 
         {
             for (let r = 0; r <= N; r++)
@@ -1232,8 +1284,9 @@
                 const c = key % N;
                 visited[r][c] = true;
             }
-            const stack = [[0, 0]];
-            visited[0][0] = true;
+            const stack = [[startCell[0], startCell[1]]];
+            visited[startCell[0]][startCell[1]] = true;
+            leftFollowPath.push([startCell[0], startCell[1]]);
             const dirs = [[0, 1], [1, 0], [0, -1], [-1, 0]];
 
             while (stack.length) {
@@ -1334,7 +1387,7 @@
 
         function isDeadEnd(r, c)
         {
-            if (r === 0 && c === 0) return false;
+            if (r === startCell[0] && c === startCell[1]) return false;
             const fc = Math.floor(N/2) - 1;
             const fr = Math.floor(N/2) - 1;
             if ((r === fr || r === fr+1) && (c ===fc || c === fc+1)) return false;
@@ -1353,6 +1406,34 @@
             const my = (e.clientY - rect.top) * (cv.height / rect.height);
             const T = 7;
 
+            if(configuringStartCell)
+            {
+                for(let r = 0; r < N; r++)
+                {
+                    for(let c =0; c < N; c++)
+                    {
+                       const cellX = W + c * CELL + (CELL-W)/2;
+                       const cellY = W + r * CELL + (CELL-W)/2;
+                       const cellSize = (CELL-W)/2;
+
+                       if(mx >= cellX - cellSize && mx <= cellX + cellSize && my >= cellY - cellSize && my <= cellY + cellSize)
+                       {
+                        startCell = [r,c];
+
+                        configuringStartCell = false;
+                        const btn = document.getElementById('configStartBtn');
+
+                        btn.style.background = '#272727';
+                        btn.style.border = '2px solid #686981';
+                        btn.textContent = 'Configure start'
+
+                        draw();
+                        return;
+                       }
+                    }
+                }
+            }
+
             if(configuringFinishCells)
             {
                 for(let r = 0; r < N; r++)
@@ -1361,7 +1442,7 @@
                     {
                         const cellX = W + c * CELL + (CELL-W)/2;
                         const cellY = W + r * CELL + (CELL -W)/2;
-                        const cellSize = (CELL -W) /2;
+                        const cellSize = (CELL -W) /2;     
 
                         if(mx >= cellX - cellSize && mx <= cellX + cellSize && my >= cellY - cellSize && my <= cellY + cellSize)
                         {
@@ -1478,15 +1559,15 @@
                     usingCustomFinish = false;
                 }
 
-                if(usingCustomFinish)
-                {
-                    lockCustomFinishWalls();
-                }
+                // if(usingCustomFinish)
+                // {
+                //     lockCustomFinishWalls();
+                // }
 
-                else
-                {
-                    lockFinishWalls();
-                }
+                // else
+                // {
+                //     lockFinishWalls();
+                // }
 
                 pathCells = [];
                 leftFollowPath = [];
@@ -1542,6 +1623,7 @@
             const totaltime = (pathCells.length - 1) * celltraveltime;
             document.getElementById('sTime').textContent = totaltime.toFixed(2);
         }
+        // maze id MTExMTExMTExMTExMTExMTAwMDExMTExMDAxMTEwMDAwMTAxMTExMDAwMDAwMDAwMDExMTExMTExMTEwMDAwMDAwMDAwMTEwMTExMTEwMDAwMDAwMDAwMTExMTEwMDAwMDExMTAwMDAxMDExMTAwMDAwMDEwMTEwMDAwMDAwMDAwMDAwMTExMDAwMDAwMDAwMTExMDAxMDAxMTEwMDAwMDAxMTAxMDAxMTAwMDAwMDAwMDExMTAxMTAwMTAwMDAwMTAxMTExMTExMTEwMDAwMDExMTExMTExMTExMTEwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDExMTExMTExMTExMTExMTExMTEwMDAwMTAxMDAwMTAwMTExMTAwMDAwMTExMTAxMDAxMTAwMDAwMDAwMDAxMTEwMDExMTAxMTAwMDAwMDAxMTAwMTExMTExMTAxMDAwMDAxMDAxMTAxMDAxMDAwMDAwMDEwMDExMDEwMTEwMTExMTAxMTAwMTExMTEwMDAwMTExMTExMDAxMTEwMTEwMDEwMDExMDEwMDExMDAwMDExMTAwMDExMTAwMTExMDAwMDEwMDExMTExMDAxMTExMDAwMDAwMTAxMTEwMDExMDAwMDAwMDAwMDAxMTAwMTEwMDAwMDAwMDAwMDAwMDAxMTAwMDAwMDAwMDAwMDAwMDExMDAwMDAwMDAwMDAwMDAwMXw4NSw2OSw3MCw4NiwxMDIsMTAx
 
 
         finishCells = new Set(defaultFinishCells);
