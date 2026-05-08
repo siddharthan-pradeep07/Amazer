@@ -377,7 +377,7 @@
 
            <div class="bottom-box" style="flex: 0; width: 42vw;">
                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.8vw;">
-                    <button onclick="runPathAnime();" style="width: 100%; font-size: 1vw; border: 3px solid #129e64; color: #ffffff; background:#272727; height: 2.7vw; border-radius: 1vw;">Run simulation (shortest path)</button>
+                    <button onclick="runPathAnime(); stopDFS = true;" style="width: 100%; font-size: 1vw; border: 3px solid #129e64; color: #ffffff; background:#272727; height: 2.7vw; border-radius: 1vw;">Run simulation (shortest path)</button>
                     <!-- <button onclick="" style="width: 100%; font-size: 1vw; border: 2px solid #686981; color: #ffffff; background:#27272700; height: 2.7vw; border-radius: 1vw;">Maze size:</button> -->
                      <div class="mouseSelect">
                         <span>Select mouse:</span>
@@ -857,29 +857,32 @@
                     ctx.fillRect(c * CELL, r * CELL, W, W);
 
             //start cell label green clr
-            const sr = startCell[0];
-            const sc = startCell[1];
+            if(!configuringFinishCells && startCell[0] >= 0 && startCell[1] >= 0)
+            {
+               const sr = startCell[0];
+               const sc = startCell[1];
 
-            ctx.fillStyle = '#22c55e';
-            ctx.fillRect
-            (
-                W + sc * CELL,
-                W + sr * CELL,
-                CELL - W,
-                CELL - W
-            );
+               ctx.fillStyle = '#22c55e';
+               ctx.fillRect
+               (
+                   W + sc * CELL,
+                   W + sr * CELL,
+                   CELL - W,
+                   CELL - W
+               );
 
-            ctx.fillStyle = '#ffffff';
-            ctx.font = 'Instrument Serif';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
+                ctx.fillStyle = '#ffffff';
+                ctx.font = 'Instrument Serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
 
-            ctx.fillText
-            (
-                'S', 
-                W + sc * CELL + (CELL - W) / 2, 
-                W + sr * CELL + (CELL - W) / 2
-            );
+                ctx.fillText
+               (
+                   'S', 
+                   W + sc * CELL + (CELL - W) / 2, 
+                   W + sr * CELL + (CELL - W) / 2
+               );
+            }
 
             if(configuringFinishCells)
             {
@@ -904,12 +907,35 @@
                 ctx.textAlign = 'center';
                 ctx.fillText('Select your finish cells', SZ / 2, 20);
 
-                ctx.fillStyle = '#22c55e';
-                ctx.fillRect(W, W, CELL - W, CELL - W);
-                ctx.fillStyle = '#ffffff';
-                //ctx.textBaseline = 'middle';
-                ctx.fillText('S', W + (CELL - W) / 2, W + (CELL - W) / 2);
-    
+                // ctx.fillStyle = '#22c55e';
+                // ctx.fillRect(W, W, CELL - W, CELL - W);
+                // ctx.fillStyle = '#ffffff';
+                // //ctx.textBaseline = 'middle';
+                // ctx.fillText('S', W + (CELL - W) / 2, W + (CELL - W) / 2);
+                const sr = startCell[0];
+                const sc = startCell[1];
+
+                if(sr >= 0 && sc >= 0)
+                {
+                    ctx.fillStyle = '#22c55e';
+
+                    ctx.fillRect
+                    (
+                        W + sc * CELL,
+                        W + sr * CELL,
+                        CELL - W,
+                        CELL - W
+                    );
+
+                    ctx.fillStyle = '#ffffff';
+
+                    ctx.fillText
+                    (
+                    'S',
+                     W + sc * CELL + (CELL - W) / 2,
+                     W + sr * CELL + (CELL - W) / 2
+                    );
+                }
                 return;
             }
 
@@ -1183,6 +1209,14 @@
                 configuringStartCell = true;
                 configuringFinishCells = false;
 
+                pathCells = [];
+                leftFollowPath = [];
+                isanimating = false;
+                animationPathind = 0;
+
+                clearAllWalls();
+                startCell = [-1, -1]
+
                 btn.style.background = '#22c55e55';
                 btn.style.border = '2px solid #686981';
                 btn.textContent = 'Click a cell';
@@ -1421,13 +1455,15 @@
                         startCell = [r,c];
 
                         configuringStartCell = false;
+
                         const btn = document.getElementById('configStartBtn');
 
                         btn.style.background = '#272727';
                         btn.style.border = '2px solid #686981';
                         btn.textContent = 'Configure start'
 
-                        draw();
+                        // draw();
+                        generate();
                         return;
                        }
                     }
