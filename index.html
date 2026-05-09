@@ -53,6 +53,8 @@
         {
             width: 100%;
             height: 2.7vw; /* adjusted================================= */
+
+
             margin-right: 0;
             border-radius: 1vw;
             color: rgb(255, 255, 255);
@@ -272,6 +274,46 @@
            color: white;
         }
 
+        .mazeSizeBox
+        {
+            flex:1;
+            height: 2.7vw;
+            border: 2px solid #686981;
+            border-radius: 1vw;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.4vw 0.7vw;
+            box-sizing: border-box;
+            font-family: Instrument Serif;
+            font-size: 0.9vw;
+            color: white;
+            background: #272727;
+        }
+        #mazeSizeInput
+        {
+            width: 3.5vw;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: #eca221;
+            font-family: Instrument Serif;
+            font-size: 1vw;
+            text-align: center;
+        }
+
+        #mazeSizeInput
+        {
+            width: 3.5vw;
+            background: transparent;
+            border: none;
+        }
+
+        #mazeSizeInput::-webkit-inner-spin-button, #mazeSizeInput::-webkit-outer-spin-button
+        {
+            opacity: 1;
+        }
+
         .mouse-options
         {
             display: flex;
@@ -386,7 +428,8 @@
                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.8vw;">
                     <button onclick="runPathAnime(); stopDFS = true;" style="width: 100%; font-size: 1vw; border: 3px solid #129e64; color: #ffffff; background:#272727; height: 2.7vw; border-radius: 1vw;">Run simulation (shortest path)</button>
                     <!-- <button onclick="" style="width: 100%; font-size: 1vw; border: 2px solid #686981; color: #ffffff; background:#27272700; height: 2.7vw; border-radius: 1vw;">Maze size:</button> -->
-                     <div class="mouseSelect">
+                     <div style = "display:flex; gap:0.8;">
+                     <div class="mouseSelect" style="flex:1;">
                         <span>Select mouse:</span>
                         <div class="mouse-options">
                             <img src="photos/mice_images/mousev3.png" class="mouse-option active" onclick="selectMouse(0)">
@@ -394,6 +437,18 @@
                             <img src="photos/mice_images/mousev2.png" class="mouse-option" onclick="selectMouse(2)">
                             <img src="photos/mice_images/mousev1.png" class="mouse-option" onclick="selectMouse(3)">
                         </div>
+                     </div>
+
+                     <div class="mazeSizeBox">
+                        <span>Maze size:</span>
+                        <input 
+                           type="number"
+                           id="mazeSizeInput"
+                           min="3"
+                           max="20"
+                           value="16"
+                           onchange="updateMazeSize(this.value)">
+                     </div>
                      </div>
 
                     <button onclick="simulateBFS()" style="width: 100%; font-size: 1vw; border: 3px solid #129e64; color: #ffffff; background:#272727; height: 2.7vw; border-radius: 1vw;">Simulate DFS algorithm</button>
@@ -409,7 +464,8 @@
     </div>
 
     <script>
-        const N = 16, CELL = 26, W = 2;
+        let N = 16;
+        const CELL = 26, W = 2;
         const SZ = N * CELL + W;
         const cv = document.getElementById('cv');
         cv.width = SZ; cv.height = SZ;
@@ -894,7 +950,7 @@
             if(configuringFinishCells)
             {
 
-                ctx.fillStyle = 'rgba(100, 100, 255, 0.03)'; /////////////////
+                ctx.fillStyle = 'rgba(100, 100, 255, 0.03)';
                 ctx.fillRect(0,0,SZ,SZ);
 
                 for(let r = 0; r < N; r++)
@@ -1248,6 +1304,7 @@
             animationPathind = 0;
             draw();
         }
+
         function addAllWalls()
         {
             for(let r = 1; r < N; r++)
@@ -1263,6 +1320,18 @@
             leftFollowPath = [];
             animationPathind = 0;      
             draw();      
+        }
+
+        function updateMazeSize(value)
+        {
+            value = parseInt(value);
+
+            if(isNaN(value)) return;
+            if(value < 3) value = 3;
+            if(value > 20) value = 20;
+
+            N = value;
+            location.reload();
         }
 
         function lockFinishWalls() 
