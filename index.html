@@ -296,10 +296,12 @@
             background: transparent;
             border: none;
             outline: none;
-            color: #eca221;
+            color: #ffffff;
             font-family: Instrument Serif;
             font-size: 1vw;
             text-align: center;
+            caret-color: transparent;
+            pointer-events: none;
         }
 
         #mazeSizeInput
@@ -312,6 +314,8 @@
         #mazeSizeInput::-webkit-inner-spin-button, #mazeSizeInput::-webkit-outer-spin-button
         {
             opacity: 1;
+            pointer-events: all;
+            cursor: pointer;
         }
 
         .mouse-options
@@ -430,7 +434,6 @@
                     <!-- <button onclick="" style="width: 100%; font-size: 1vw; border: 2px solid #686981; color: #ffffff; background:#27272700; height: 2.7vw; border-radius: 1vw;">Maze size:</button> -->
                      <div style = "display:flex; gap:0.8;">
                      <div class="mouseSelect" style="flex:1;">
-                        <span>Select mouse:</span>
                         <div class="mouse-options">
                             <img src="photos/mice_images/mousev3.png" class="mouse-option active" onclick="selectMouse(0)">
                             <img src="photos/mice_images/mousev4.png" class="mouse-option" onclick="selectMouse(1)">
@@ -444,9 +447,11 @@
                         <input 
                            type="number"
                            id="mazeSizeInput"
-                           min="3"
+                           min="4"
                            max="20"
                            value="16"
+                           onkeydown="return false"
+                           onwheel="this.blur()"
                            onchange="updateMazeSize(this.value)">
                      </div>
                      </div>
@@ -465,8 +470,13 @@
 
     <script>
         let N = 16;
-        const CELL = 26, W = 2;
-        const SZ = N * CELL + W;
+        //let N = parseInt(localStorage.getItem("mazeSize")) || 16;
+        const W = 2;
+        const canvassize = 416 + W;
+        let CELL = Math.floor(416/N);
+        let SZ = N*CELL + W;
+        //const SZ = N * CELL + W;
+
         const cv = document.getElementById('cv');
         cv.width = SZ; cv.height = SZ;
         const ctx = cv.getContext('2d');
@@ -485,8 +495,8 @@
         resize();
         window.addEventListener('resize', resize);
 
-        const hWalls = Array.from({ length: N + 1 }, () => Array(N).fill(true));
-        const vWalls = Array.from({ length: N }, () => Array(N + 1).fill(true));
+        let hWalls = Array.from({ length: N + 1 }, () => Array(N).fill(true));
+        let vWalls = Array.from({ length: N }, () => Array(N + 1).fill(true));
 
         let pathCells = [];
 
@@ -603,7 +613,7 @@
 
         let startCell = [0,0];
 
-        const defaultFinishCells = new Set([[7,7],[7,8],[8,7],[8,8]].map(([r,c]) => r * N + c));
+        //const defaultFinishCells = new Set([[7,7],[7,8],[8,7],[8,8]].map(([r,c]) => r * N + c));
         //const mouseImage = new Image();
         //mouseImage.src = 'photos/Micro-mouse-design-amazer-removebg-preview.png';
         const mouseImages = 
@@ -617,6 +627,14 @@
 
         const mouseImage = new Image();
         mouseImage.src = mouseImages[selectMouseIndex];
+
+        function getDefaultFinishCells()
+        {
+            const fc = Math.floor(N/2) - 1;
+            const fr = Math.floor(N/2) - 1;
+            return new Set([[fr,fc],[fr,fc+1],[fr+1,fc],[fr+1,fc+1]].map(([r,c]) => r * N + c));  
+        }
+        let defaultFinishCells = getDefaultFinishCells();
 
         function selectMouse(index)
         {
@@ -1094,7 +1112,7 @@
                     const lastind = leftFollowPath.length - 1;
                     const mouseX = W + leftFollowPath[lastind][1]*CELL + (CELL-W)/2;
                     const mouseY = W + leftFollowPath[lastind][0]*CELL + (CELL-W)/2;
-                    const mouseSize = 25;
+                    const mouseSize = CELL -2;
 
                     let rotation = 0;
                     if(leftFollowPath.length > 1)
@@ -1322,26 +1340,57 @@
             draw();      
         }
 
-        function updateMazeSize(value)
+        function updateMazeSize(value)  //claude
         {
             value = parseInt(value);
 
             if(isNaN(value)) return;
-            if(value < 3) value = 3;
+            stopDFS = true;
+            if(value < 4) value = 4;
             if(value > 20) value = 20;
-
+            document.getElementById('mazeSizeInput').value = value;
             N = value;
-            location.reload();
+            CELL = Math.floor(416/N);
+            SZ = N * CELL + W;
+
+            cv.width = SZ;
+            cv.height = SZ;
+            resize();
+
+            hWalls = Array.from({ length: N + 1 }, () => Array(N).fill(true));
+            vWalls = Array.from({ length: N }, () => Array(N + 1).fill(true));
+
+            startCell = [0,0];
+            pathCells = [];
+            leftFollowPath = [];
+            defaultFinishCells = getDefaultFinishCells();
+            isanimating = false;
+            animationPathind = 0;
+            //stopDFS= false;
+            configuringFinishCells = false;
+            configuringStartCell = false;
+
+            const fc = Math.floor(N / 2) -1;
+            const fr = Math.floor(N / 2) -1;
+
+            finishCells = new Set([[fr,fc],[fr,fc+1],[fr+1,fc],[fr+1,fc+1]].map(([r,c]) => r * N + c));
+            usingCustomFinish = false;
+
+            resetStats();
+            generate();
+            //localStorage.setItem("mazeSize", value);
+            //location.reload();
         }
 
         function lockFinishWalls() 
         {
-            hWalls[7][7] = true; hWalls[7][8] = true;
-            hWalls[9][7] = true; hWalls[9][8] = true;
-            vWalls[7][7] = true; vWalls[7][9] = true;
-            vWalls[8][7] = true; vWalls[7][7] = true;
-            hWalls[8][7] = false; hWalls[8][8] = false;
-            vWalls[7][8] = false; vWalls[8][8] = false;
+            // hWalls[7][7] = true; hWalls[7][8] = true;
+            // hWalls[9][7] = true; hWalls[9][8] = true;
+            // vWalls[7][7] = true; vWalls[7][9] = true;
+            // vWalls[8][7] = true; vWalls[7][7] = true;
+            // hWalls[8][7] = false; hWalls[8][8] = false;
+            // vWalls[7][8] = false; vWalls[8][8] = false;
+            lockCustomFinishWalls();
         }
 
         function getFinishedborders()
@@ -1396,7 +1445,7 @@
             }
             const stack = [[startCell[0], startCell[1]]];
             visited[startCell[0]][startCell[1]] = true;
-            leftFollowPath.push([startCell[0], startCell[1]]);
+            //eftFollowPath.push([startCell[0], startCell[1]]);
             const dirs = [[0, 1], [1, 0], [0, -1], [-1, 0]];
 
             while (stack.length) {
@@ -1739,7 +1788,7 @@
         }
         // maze id MTExMTExMTExMTExMTExMTAwMDExMTExMDAxMTEwMDAwMTAxMTExMDAwMDAwMDAwMDExMTExMTExMTEwMDAwMDAwMDAwMTEwMTExMTEwMDAwMDAwMDAwMTExMTEwMDAwMDExMTAwMDAxMDExMTAwMDAwMDEwMTEwMDAwMDAwMDAwMDAwMTExMDAwMDAwMDAwMTExMDAxMDAxMTEwMDAwMDAxMTAxMDAxMTAwMDAwMDAwMDExMTAxMTAwMTAwMDAwMTAxMTExMTExMTEwMDAwMDExMTExMTExMTExMTEwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDExMTExMTExMTExMTExMTExMTEwMDAwMTAxMDAwMTAwMTExMTAwMDAwMTExMTAxMDAxMTAwMDAwMDAwMDAxMTEwMDExMTAxMTAwMDAwMDAxMTAwMTExMTExMTAxMDAwMDAxMDAxMTAxMDAxMDAwMDAwMDEwMDExMDEwMTEwMTExMTAxMTAwMTExMTEwMDAwMTExMTExMDAxMTEwMTEwMDEwMDExMDEwMDExMDAwMDExMTAwMDExMTAwMTExMDAwMDEwMDExMTExMDAxMTExMDAwMDAwMTAxMTEwMDExMDAwMDAwMDAwMDAxMTAwMTEwMDAwMDAwMDAwMDAwMDAxMTAwMDAwMDAwMDAwMDAwMDExMDAwMDAwMDAwMDAwMDAwMXw4NSw2OSw3MCw4NiwxMDIsMTAx
 
-
+        document.getElementById('mazeSizeInput').value = N; 
         finishCells = new Set(defaultFinishCells);
         usingCustomFinish = false;
         generate();
