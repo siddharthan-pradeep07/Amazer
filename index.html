@@ -358,7 +358,6 @@
        <div style="display: flex; flex-direction: column; gap: 1vw;">
         <div class="box">
             <canvas id="cv"></canvas>
-            <button id="speedBtn" style="display: none;">Speed</button>
         </div>
         <div style="display: flex; flex-direction: row; gap: 1vw;">
             <div class="bottom-box" style="flex: 1;">
@@ -886,8 +885,7 @@
                 //  stack.push([nr,nc]);
                 // }
                 draw();
-                setTimeout(DFSstep, getDfsDelay()); 
-                DFSstep();
+                setTimeout(DFSstep, 160);
             }
           DFSstep();
         }
@@ -1811,8 +1809,6 @@
         finishCells = new Set(defaultFinishCells);
         usingCustomFinish = false;
         generate();
-    
     </script>
-    <script src="speed-control.js"></script>
 </body>
 </html>

@@ -8,7 +8,8 @@ speedButton.style.display = 'none';
 
 dfsBtn.addEventListener('click', function()
 {
-if (!speedButton.style.display || speedButton.style.display === 'none') {
+if (!speedButton.style.display || speedButton.style.display === 'none') 
+   {
     speedButton.style.display = 'block';
     speedButton.style.position = 'absolute';
     speedButton.style.top = '1vw';
@@ -50,3 +51,5 @@ function getDfsDelay()
 {
     return dfsDelay;
 }
+
+// This function is currently not under usage.
