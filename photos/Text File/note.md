@@ -1,1 +1,1 @@
-All the images in this folder are screenshots of the website itself. 
+All the images in this folder are screenshots of the website itself and the images of different mice (used for simulating DFS algorithm). 

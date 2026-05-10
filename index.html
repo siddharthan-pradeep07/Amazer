@@ -429,10 +429,10 @@
            </div>
 
            <div class="bottom-box" style="flex: 0; width: 42vw;">
-               <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.8vw;">
+               <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.8vw;">
                     <button onclick="runPathAnime(); stopDFS = true;" style="width: 100%; font-size: 1vw; border: 3px solid #129e64; color: #ffffff; background:#272727; height: 2.7vw; border-radius: 1vw;">Run simulation (shortest path)</button>
                     <!-- <button onclick="" style="width: 100%; font-size: 1vw; border: 2px solid #686981; color: #ffffff; background:#27272700; height: 2.7vw; border-radius: 1vw;">Maze size:</button> -->
-                     <div style = "display:flex; gap:0.8;">
+                     <!-- <div style = "display:flex; gap:0.8;"> -->
                      <div class="mouseSelect" style="flex:1;">
                         <div class="mouse-options">
                             <img src="photos/mice_images/mousev3.png" class="mouse-option active" onclick="selectMouse(0)">
@@ -453,15 +453,13 @@
                            onkeydown="return false"
                            onwheel="this.blur()"
                            onchange="updateMazeSize(this.value)">
-                     </div>
-                     </div>
-
+                    </div>
                     <button onclick="simulateBFS()" style="width: 100%; font-size: 1vw; border: 3px solid #129e64; color: #ffffff; background:#272727; height: 2.7vw; border-radius: 1vw;">Simulate DFS algorithm</button>
                     <!-- <button onclick="toggleConfigureFinishCells(); resetStats();" style="width: 100%; font-size: 1vw; border: 2px solid #686981; color: #ffffff; background:#272727; height: 2.7vw; border-radius: 1vw;" id="configFinishBtn">Configure finish cells.</button>f -->
-                    <div style="display:flex; gap:0.8vw;">
+                    <!-- <div style="display:flex; gap:0.8vw;"> -->
                         <button onclick="toggleConfigureFinishCells(); resetStats();" style="flex:1; font-size: 0.9vw; border: 2px solid #686981; color: #ffffff; background: #272727; height: 2.7vw; border-radius: 1vw;" id ="configFinishBtn">Configure Finish</button>
                         <button onclick="toggleConfigureStartCell(); resetStats();" style="flex:1; font-size: 0.9vw; border: 2px solid #686981; color: #ffffff; background:#272727; height: 2.7vw; border-radius: 1vw;" id="configStartBtn">Configure start</button>
-                    </div> 
+                    <!-- </div>  -->
                 </div>
             </div> 
        </div>
@@ -1680,6 +1678,7 @@
 
             state += '|';
             state += Array.from(finishCells).join(',');
+            state += '|' + N;
 
             return btoa(state);
         }
@@ -1689,7 +1688,25 @@
             try
             {
                 const decoded = atob(encoded);
-                const [state, finishPart] = decoded.split('|');
+                const [state, finishPart, sizePart] = decoded.split('|');
+
+                if(sizePart)
+                {
+                    const loadedN = parseInt(sizePart);
+                    if(!isNaN(loadedN) && loadedN !== N)
+                    {
+                        N = loadedN;
+                        CELL = Math.floor(416/N);
+                        SZ = N * CELL + W;
+                        cv.width = SZ;
+                        cv.height = SZ;
+                        resize();
+                        hWalls = Array.from({ length: N + 1}, () => Array(N).fill(true));
+                        vWalls = Array.from({ length: N}, () => Array(N + 1).fill(true));
+                        defaultFinishCells = getDefaultFinishCells();
+                        document.getElementById('mazeSizeInput').value = N;
+                    }
+                }
 
                 let idx = 0;
 
