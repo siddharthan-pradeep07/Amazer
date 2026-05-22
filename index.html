@@ -660,7 +660,7 @@
 
             isanimating = true;
             animationPathind = 0;
-            const animeSpeed = 48;
+            const animeSpeed = 40;
 
             function animateStep()
             {
@@ -1285,6 +1285,11 @@
                 btn.style.background = '#272727';
                 btn.style.border = '2px solid #272727';
                 btn.textContent = 'Configure start'
+
+                ctx.fillStyle = '#ffffff';
+                ctx.font = '16px Instrument Serif';
+                ctx.textAlign = 'center';
+                ctx.fillText('Select your finish cells', SZ / 2, 20);
             }
             else
             {

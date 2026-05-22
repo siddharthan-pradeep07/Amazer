@@ -50,4 +50,7 @@ Code file: The code file is written in C++, Custom genearted based on the path. 
 
 Micro mice are hardware artworks, but to run it properly and make it function as expected, it needs a lot of tweaking in. Even minute things are important, as those are the ones which causes a lot of problems when it runs through the maze. Amazer helps to run, test analize the micro-mouse as well as the maze itself with various tools to provide the best user experience. 
 
-Made by Siddharthan for hackclub/beest < happy hacking >
+AI use: 
+Used claude to get the direction mapping values, for fixing the left following algorithm. CSS color suggestions, and for fixing the math behind maze generation.
+
+Made by Siddharthan with 💛< happy hacking >
